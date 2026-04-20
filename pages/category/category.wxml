@@ -1,0 +1,39 @@
+<!--pages/category/category.wxml-->
+<view class="container">
+  <!-- 搜索框 -->
+  <view class="search-bar">
+    <view class="search-input-wrapper">
+      <input 
+        class="search-input" 
+        placeholder="搜索菜谱分类" 
+        value="{{searchValue}}"
+        bindinput="onSearchInput"
+        confirm-type="search"
+        bindconfirm="onSearch"
+      />
+      <view class="search-btn" bindtap="onSearch">
+        <text class="search-icon">🔍</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 分类网格 -->
+  <view class="category-grid">
+    <view 
+      class="category-item" 
+      wx:for="{{categories}}" 
+      wx:key="id"
+      data-id="{{item.id}}"
+      data-name="{{item.name}}"
+      bindtap="onCategoryTap"
+    >
+      <view class="category-icon" style="background-color: {{item.color}}">
+        <text class="icon-text">{{item.icon}}</text>
+      </view>
+      <view class="category-info">
+        <text class="category-name">{{item.name}}</text>
+        <text class="category-count">{{item.count}}道菜</text>
+      </view>
+    </view>
+  </view>
+</view>

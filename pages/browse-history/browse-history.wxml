@@ -1,0 +1,38 @@
+<!-- pages/browse-history/browse-history.wxml -->
+<view class="container">
+  <!-- 头部操作栏 -->
+  <view class="header-bar">
+    <text class="title">浏览记录</text>
+    <view class="clear-btn" bindtap="onClearAll" wx:if="{{!isEmpty}}">
+      <text class="clear-text">清空</text>
+    </view>
+  </view>
+
+  <!-- 空状态 -->
+  <view class="empty-state" wx:if="{{isEmpty}}">
+    <view class="empty-icon">🕘</view>
+    <text class="empty-text">还没有浏览任何菜谱</text>
+    <text class="empty-desc">去首页看看有什么好吃的吧</text>
+    <view class="go-home-btn" bindtap="goToHome">
+      <text class="btn-text">去首页</text>
+    </view>
+  </view>
+
+  <!-- 浏览记录列表：两列网格（主图 + 菜名） -->
+  <view class="recipe-grid" wx:else>
+    <view 
+      class="grid-item" 
+      wx:for="{{historyList}}" 
+      wx:key="id"
+      data-id="{{item.id}}"
+      data-index="{{index}}"
+      bindtap="onRecipeTap"
+    >
+      <image class="grid-image" src="{{item.image}}" mode="aspectFill" />
+      <text class="grid-title">{{item.title}}</text>
+      <view class="remove-btn" catchtap="onRemoveItem" data-id="{{item.id}}" data-index="{{index}}">
+        <text class="remove-icon">❌</text>
+      </view>
+    </view>
+  </view>
+</view>

@@ -1,0 +1,13 @@
+<view class="login-page">
+  <view class="login-card">
+    <image class="login-avatar" src="{{userInfo && userInfo.avatarUrl ? userInfo.avatarUrl : '/images/recipes/gongbao-hero.jpg'}}" mode="aspectFill" />
+    <text class="login-title">WeChat Sign In</text>
+    <text class="login-desc">Authorize once to sync your account and profile.</text>
+
+    <button class="login-btn" loading="{{loading}}" bindtap="onWechatLogin">
+      {{loading ? 'Signing in...' : 'Sign in with WeChat'}}
+    </button>
+
+    <text wx:if="{{isLoggedIn}}" class="login-status">This device is already signed in. Re-authorize to refresh profile data.</text>
+  </view>
+</view>

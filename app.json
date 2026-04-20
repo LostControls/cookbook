@@ -1,0 +1,55 @@
+{
+  "pages": [
+    "pages/index/index",
+    "pages/category/category",
+    "pages/favorite/favorite",
+    "pages/account/account",
+    "pages/login/login",
+    "pages/api-debug/api-debug",
+    "pages/recipe-detail/recipe-detail",
+    "pages/recipe-list/recipe-list",
+    "pages/browse-history/browse-history",
+    "pages/feedback/feedback",
+    "pages/logs/logs"
+  ],
+  "window": {
+    "backgroundTextStyle": "light",
+    "navigationBarBackgroundColor": "#fff",
+    "navigationBarTitleText": "菜谱大全",
+    "navigationBarTextStyle": "black"
+  },
+  "tabBar": {
+    "color": "#7A7E83",
+    "selectedColor": "#3cc51f",
+    "borderStyle": "black",
+    "backgroundColor": "#ffffff",
+    "list": [
+      {
+        "pagePath": "pages/index/index",
+        "iconPath": "images/home.png",
+        "selectedIconPath": "images/home-active.png",
+        "text": "首页"
+      },
+      {
+        "iconPath": "images/category.png",
+        "selectedIconPath": "images/category-active.png",
+        "pagePath": "pages/category/category",
+        "text": "分类"
+      },
+      {
+        "iconPath": "images/favorite.png",
+        "selectedIconPath": "images/favorite-active.png",
+        "pagePath": "pages/favorite/favorite",
+        "text": "收藏"
+      },
+      {
+        "iconPath": "images/profile.png",
+        "selectedIconPath": "images/profile-active.png",
+        "pagePath": "pages/account/account",
+        "text": "我的"
+      }
+    ]
+  },
+  "style": "v2",
+  "sitemapLocation": "sitemap.json"
+}

@@ -1,0 +1,112 @@
+<!--pages/recipe-detail/recipe-detail.wxml-->
+<view class="container">
+  <!-- 主图区域 -->
+  <view class="hero-section">
+    <image class="hero-image" src="{{recipe.image}}" mode="aspectFill" />
+    <view class="hero-overlay">
+      <view class="recipe-info">
+        <text class="recipe-title">{{recipe.title}}</text>
+        <view class="recipe-meta">
+          <text class="meta-item">{{recipe.difficulty}}</text>
+          <text class="meta-item">{{recipe.time}}</text>
+          <text class="meta-item">{{recipe.servings}}</text>
+          <text class="meta-item">⭐ {{recipe.rating}}</text>
+        </view>
+        <text class="recipe-description">{{recipe.description}}</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 基本信息 -->
+  <view class="info-section">
+    <view class="author-info" bindtap="onAuthorTap">
+      <image class="author-avatar" src="/images/recipes/gongbao-hero.jpg" mode="aspectFill" />
+      <view class="author-details">
+        <text class="author-name">{{recipe.author}}</text>
+        <text class="author-desc">美食达人</text>
+      </view>
+    </view>
+    <view class="nutrition-info" bindtap="onNutritionTap">
+      <text class="nutrition-label">营养信息</text>
+      <text class="nutrition-value">{{recipe.nutrition.calories}}卡路里</text>
+    </view>
+  </view>
+
+  <!-- 所需材料 -->
+  <view class="ingredients-section">
+    <view class="section-header">
+      <text class="section-title">所需材料</text>
+      <text class="section-subtitle">{{recipe.ingredients.length}}种食材</text>
+    </view>
+    <view class="ingredients-list">
+      <view class="ingredient-item" wx:for="{{recipe.ingredients}}" wx:key="name">
+        <view class="ingredient-info">
+          <text class="ingredient-name">{{item.name}}</text>
+          <text class="ingredient-amount">{{item.amount}}{{item.unit}}</text>
+        </view>
+        <view class="ingredient-checkbox">
+          <text class="checkbox-icon">☐</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 制作步骤 -->
+  <view class="steps-section">
+    <view class="section-header">
+      <text class="section-title">制作步骤</text>
+      <text class="section-subtitle">{{recipe.steps.length}}个步骤</text>
+    </view>
+    <view class="steps-list">
+      <view class="step-item" wx:for="{{recipe.steps}}" wx:key="step">
+        <view class="step-number">{{item.step}}</view>
+        <view class="step-content">
+          <view class="step-header">
+            <text class="step-title">{{item.title}}</text>
+            <text class="step-tips" wx:if="{{item.tips}}">💡 {{item.tips}}</text>
+          </view>
+          <text class="step-description">{{item.description}}</text>
+          <image class="step-image" src="{{item.image}}" mode="aspectFill" wx:if="{{item.image}}" />
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 占位防遮挡 -->
+  <view class="bottom-spacer"></view>
+
+  <!-- 底部操作栏 -->
+  <view class="bottom-actions">
+    <view class="action-btn favorite-btn {{isFavorited ? 'favorited' : ''}}" bindtap="onFavoriteTap">
+      <text class="action-icon">{{isFavorited ? '❤️' : '🤍'}}</text>
+      <text class="action-text">{{isFavorited ? '已收藏' : '收藏'}}</text>
+    </view>
+    <view class="action-btn share-btn" bindtap="onShareTap">
+      <text class="action-icon">📤</text>
+      <text class="action-text">分享</text>
+    </view>
+    <view class="action-btn cook-btn">
+      <text class="action-text">开始制作</text>
+    </view>
+  </view>
+
+  <!-- 分享弹窗 -->
+  <view class="share-modal {{showShare ? 'show' : ''}}" bindtap="onCloseShare">
+    <view class="share-content" catchtap="">
+      <view class="share-header">
+        <text class="share-title">分享菜谱</text>
+        <text class="share-close" bindtap="onCloseShare">✕</text>
+      </view>
+      <view class="share-options">
+        <view class="share-option" bindtap="onShareToWechat">
+          <text class="share-icon">💬</text>
+          <text class="share-label">微信好友</text>
+        </view>
+        <view class="share-option" bindtap="onCopyLink">
+          <text class="share-icon">🔗</text>
+          <text class="share-label">复制链接</text>
+        </view>
+      </view>
+    </view>
+  </view>
+</view>

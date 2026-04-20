@@ -1,0 +1,32 @@
+<!-- pages/feedback/feedback.wxml -->
+<view class="container">
+  <view class="header-bar">
+    <text class="title">意见反馈</text>
+  </view>
+
+  <view class="form-card">
+    <view class="form-item">
+      <text class="label">标题</text>
+      <input class="input" placeholder="例如：菜谱步骤图片太模糊" value="{{subject}}" bindinput="onInputSubject" />
+    </view>
+
+    <view class="form-item">
+      <text class="label">反馈内容</text>
+      <textarea class="textarea" placeholder="请描述你的问题或建议" value="{{content}}" bindinput="onInputContent" auto-height="true" />
+    </view>
+
+    <view class="form-item">
+      <text class="label">联系方式（选填）</text>
+      <input class="input" placeholder="邮箱/手机号/微信号" value="{{contact}}" bindinput="onInputContact" />
+    </view>
+
+    <view class="submit-btn" bindtap="onSubmit">
+      <text class="btn-text">提交反馈</text>
+    </view>
+  </view>
+
+  <!-- 提交成功提示 -->
+  <view class="success-tip" wx:if="{{showSuccess}}">
+    <text class="tip-text">感谢反馈，我们会尽快处理！</text>
+  </view>
+</view>

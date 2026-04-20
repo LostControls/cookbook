@@ -1,0 +1,141 @@
+/* pages/recipe-list/recipe-list.wxss */
+.container {
+  background-color: #f8f9fa;
+  display: block !important;
+  height: auto !important;
+  min-height: 100vh;
+  width: 100%;
+}
+
+/* 搜索与标题 */
+.search-bar {
+  padding: 20rpx;
+  background-color: #fff;
+  border-bottom: 1rpx solid #eee;
+}
+.search-input-wrapper {
+  display: flex;
+  align-items: center;
+  background-color: #fff;
+  border-radius: 50rpx;
+  padding: 0 20rpx;
+  box-shadow: 0 2rpx 10rpx rgba(0,0,0,0.1);
+}
+.search-input {
+  flex: 1;
+  height: 80rpx;
+  font-size: 28rpx;
+  padding: 0 20rpx;
+}
+.search-btn {
+  width: 60rpx;
+  height: 60rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #3cc51f;
+  border-radius: 50%;
+}
+.search-icon {
+  font-size: 24rpx;
+  color: #fff;
+}
+.category-title {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 12rpx;
+}
+.category-name {
+  font-size: 32rpx;
+  font-weight: bold;
+  color: #333;
+}
+.category-count {
+  font-size: 24rpx;
+  color: #999;
+}
+
+/* 列表样式，参考首页 */
+.recipe-list {
+  display: flex;
+  flex-direction: column;
+  gap: 20rpx;
+  padding: 20rpx;
+}
+.recipe-item {
+  display: flex;
+  background-color: #fff;
+  border-radius: 20rpx;
+  padding: 20rpx;
+  box-shadow: 0 4rpx 20rpx rgba(0,0,0,0.08);
+  position: relative;
+}
+.recipe-image {
+  width: 120rpx;
+  height: 120rpx;
+  border-radius: 15rpx;
+  margin-right: 20rpx;
+}
+.recipe-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+.recipe-title {
+  font-size: 32rpx;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 6rpx;
+}
+.recipe-meta {
+  display: flex;
+  gap: 10rpx;
+  margin-bottom: 6rpx;
+}
+.meta-item {
+  font-size: 24rpx;
+  color: #666;
+}
+.recipe-author {
+  font-size: 24rpx;
+  color: #999;
+}
+.favorite-btn {
+  position: absolute;
+  right: 20rpx;
+  top: 20rpx;
+  width: 60rpx;
+  height: 60rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #f8f9fa;
+  border-radius: 50%;
+}
+.favorite-icon {
+  font-size: 28rpx;
+}
+
+/* 空状态 */
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 100rpx 40rpx;
+  text-align: center;
+}
+.empty-icon {
+  font-size: 100rpx;
+  margin-bottom: 20rpx;
+}
+.empty-text {
+  font-size: 32rpx;
+  color: #666;
+  margin-bottom: 10rpx;
+}
+.empty-desc {
+  font-size: 24rpx;
+  color: #999;
+}

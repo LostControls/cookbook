@@ -1,0 +1,154 @@
+.container {
+  background-color: #f8f9fa;
+  min-height: 100vh;
+  padding: 0;
+  width: 100%;
+}
+
+.user-card {
+  display: flex;
+  align-items: center;
+  background-color: #fff;
+  padding: 30rpx 20rpx;
+  margin-bottom: 10rpx;
+  box-shadow: 0 2rpx 10rpx rgba(0, 0, 0, 0.08);
+}
+
+.user-avatar {
+  width: 120rpx;
+  height: 120rpx;
+  border-radius: 50%;
+  overflow: hidden;
+  margin-right: 20rpx;
+}
+
+.avatar-img {
+  width: 100%;
+  height: 100%;
+}
+
+.user-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.user-name {
+  font-size: 36rpx;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 8rpx;
+}
+
+.user-level {
+  font-size: 24rpx;
+  color: #3cc51f;
+  background-color: #e8f5e8;
+  padding: 4rpx 12rpx;
+  border-radius: 10rpx;
+  align-self: flex-start;
+}
+
+.auth-btn {
+  margin: 0;
+  padding: 0 28rpx;
+  min-width: 156rpx;
+  line-height: 68rpx;
+  border-radius: 999rpx;
+  background-color: #16a34a;
+  color: #fff;
+  font-size: 26rpx;
+}
+
+.auth-btn::after {
+  border: none;
+}
+
+.auth-btn--plain {
+  background-color: #eef2f7;
+  color: #475569;
+}
+
+.stats-card {
+  display: flex;
+  background-color: #fff;
+  padding: 30rpx 20rpx;
+  margin-bottom: 10rpx;
+  box-shadow: 0 2rpx 10rpx rgba(0, 0, 0, 0.08);
+}
+
+.stat-item {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.stat-number {
+  font-size: 40rpx;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 8rpx;
+}
+
+.stat-label {
+  font-size: 24rpx;
+  color: #666;
+}
+
+.stat-divider {
+  width: 1rpx;
+  background-color: #eee;
+  margin: 0 20rpx;
+}
+
+.menu-list {
+  background-color: #fff;
+  margin-bottom: 10rpx;
+  box-shadow: 0 2rpx 10rpx rgba(0, 0, 0, 0.08);
+  overflow: hidden;
+}
+
+.menu-item {
+  display: flex;
+  align-items: center;
+  padding: 30rpx 20rpx;
+  border-bottom: 1rpx solid #f0f0f0;
+}
+
+.menu-item:last-child {
+  border-bottom: none;
+}
+
+.menu-item:active {
+  background-color: #f8f9fa;
+}
+
+.menu-icon {
+  font-size: 40rpx;
+  margin-right: 20rpx;
+  width: 60rpx;
+  text-align: center;
+}
+
+.menu-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.menu-title {
+  font-size: 32rpx;
+  color: #333;
+  margin-bottom: 4rpx;
+}
+
+.menu-desc {
+  font-size: 24rpx;
+  color: #999;
+}
+
+.menu-arrow {
+  font-size: 24rpx;
+  color: #ccc;
+}

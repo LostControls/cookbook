@@ -1,0 +1,39 @@
+<view class="container">
+  <view class="panel">
+    <view class="panel-header">
+      <text class="panel-title">本地接口联调</text>
+      <text class="panel-subtitle">开发环境请求会发送到 http://cookbook.com</text>
+    </view>
+
+    <view class="action-list">
+      <button class="action-btn" bindtap="getUserInfo">获取用户信息</button>
+      <button class="action-btn" bindtap="getRecipeList">获取菜谱列表</button>
+      <button class="action-btn" bindtap="getCategoryList">获取分类列表</button>
+      <button class="action-btn action-btn--ghost" bindtap="createRecipe">创建测试菜谱</button>
+    </view>
+
+    <view class="status-card">
+      <text class="status-label">最近请求</text>
+      <text class="status-value">{{lastRequest}}</text>
+      <text class="status-label">请求结果</text>
+      <text class="status-value">{{requestStatus}}</text>
+    </view>
+  </view>
+
+  <view class="panel">
+    <view class="result-block">
+      <text class="result-title">用户信息</text>
+      <text class="result-content">{{userInfoText}}</text>
+    </view>
+
+    <view class="result-block">
+      <text class="result-title">菜谱列表</text>
+      <text class="result-content">{{recipeListText}}</text>
+    </view>
+
+    <view class="result-block">
+      <text class="result-title">分类列表</text>
+      <text class="result-content">{{categoryListText}}</text>
+    </view>
+  </view>
+</view>

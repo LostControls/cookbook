@@ -1,0 +1,47 @@
+<view class="container">
+  <view class="user-card">
+    <view class="user-avatar">
+      <image class="avatar-img" src="{{userInfo.avatar}}" mode="aspectFill" />
+    </view>
+    <view class="user-info">
+      <text class="user-name">{{userInfo.nickname}}</text>
+      <text class="user-level">{{userInfo.level}}</text>
+    </view>
+    <button wx:if="{{!isLoggedIn}}" class="auth-btn" bindtap="onLogin">Sign In</button>
+    <button wx:else class="auth-btn auth-btn--plain" bindtap="onLogout">Sign Out</button>
+  </view>
+
+  <view class="stats-card">
+    <view class="stat-item">
+      <text class="stat-number">{{userInfo.favorites}}</text>
+      <text class="stat-label">Favorites</text>
+    </view>
+    <view class="stat-divider"></view>
+    <view class="stat-item">
+      <text class="stat-number">{{userInfo.recipes}}</text>
+      <text class="stat-label">Posts</text>
+    </view>
+    <view class="stat-divider"></view>
+    <view class="stat-item">
+      <text class="stat-number">{{userInfo.followers}}</text>
+      <text class="stat-label">Following</text>
+    </view>
+  </view>
+
+  <view class="menu-list">
+    <view
+      class="menu-item"
+      wx:for="{{menuList}}"
+      wx:key="title"
+      data-url="{{item.url}}"
+      bindtap="onMenuTap"
+    >
+      <view class="menu-icon">{{item.icon}}</view>
+      <view class="menu-content">
+        <text class="menu-title">{{item.title}}</text>
+        <text class="menu-desc">{{item.desc}}</text>
+      </view>
+      <view class="menu-arrow">></view>
+    </view>
+  </view>
+</view>

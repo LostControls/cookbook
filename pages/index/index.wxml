@@ -1,0 +1,90 @@
+<!--pages/index/index.wxml-->
+<view class="container">
+  <!-- 搜索框 -->
+  <view class="search-bar">
+    <view class="search-input-wrapper">
+      <input 
+        class="search-input" 
+        placeholder="搜索菜谱、食材" 
+        value="{{searchValue}}"
+        bindinput="onSearchInput"
+        confirm-type="search"
+        bindconfirm="onSearch"
+      />
+      <view class="search-btn" bindtap="onSearch">
+        <text class="search-icon">🔍</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 轮播图 -->
+  <view class="banner-section">
+    <swiper class="banner-swiper" indicator-dots="true" autoplay="true" interval="3000" duration="500">
+      <swiper-item wx:for="{{bannerList}}" wx:key="id">
+        <image class="banner-image" src="{{item.image}}" mode="aspectFill" />
+        <view class="banner-content">
+          <text class="banner-title">{{item.title}}</text>
+          <text class="banner-desc">{{item.desc}}</text>
+        </view>
+      </swiper-item>
+    </swiper>
+  </view>
+
+  <!-- 快速分类 -->
+  <view class="category-section">
+    <view class="section-title">
+      <text class="title-text">快速分类</text>
+    </view>
+    <view class="category-grid">
+      <view 
+        class="category-item" 
+        wx:for="{{quickCategories}}" 
+        wx:key="name"
+        data-name="{{item.name}}"
+        bindtap="onCategoryTap"
+      >
+        <view class="category-icon" style="background-color: {{item.color}}">
+          <text class="icon-text">{{item.icon}}</text>
+        </view>
+        <text class="category-name">{{item.name}}</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 推荐菜谱 -->
+  <view class="recipe-section">
+    <view class="section-title">
+      <text class="title-text">推荐菜谱</text>
+    </view>
+    <view class="recipe-list">
+      <view 
+        class="recipe-item" 
+        wx:for="{{recommendRecipes}}" 
+        wx:key="id"
+        data-id="{{item.id}}"
+        data-index="{{index}}"
+        bindtap="onRecipeTap"
+      >
+        <image class="recipe-image" src="{{item.image}}" mode="aspectFill" />
+        <view class="recipe-info">
+          <text class="recipe-title">{{item.title}}</text>
+          <view class="recipe-meta">
+            <text class="meta-item">{{item.difficulty}}</text>
+            <text class="meta-item">{{item.time}}</text>
+            <text class="meta-item">⭐ {{item.rating}}</text>
+          </view>
+          <text class="recipe-author">by {{item.author}}</text>
+        </view>
+        <view 
+          class="favorite-btn" 
+          data-id="{{item.id}}"
+          data-index="{{index}}"
+          bindtap="onFavoriteTap"
+          catchtap="onFavoriteTap"
+        >
+          <text class="favorite-icon">⭐</text>
+        </view>
+      </view>
+    </view>
+  </view>
+</view>
