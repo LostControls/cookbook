@@ -2,7 +2,7 @@
 
 // 开发环境配置
 const devConfig = {
-  baseUrl: 'http://cookbook.com',
+  baseUrl: 'http://127.0.0.1:8080',
   timeout: 10000,
   // 开发环境接口
   apis: {
@@ -30,7 +30,7 @@ const devConfig = {
 
 // 生产环境配置
 const prodConfig = {
-  baseUrl: 'https://api.example.com',
+  baseUrl: 'http://106.53.112.100',
   timeout: 10000,
   // 生产环境接口
   apis: {
@@ -55,7 +55,7 @@ const prodConfig = {
 
 // 测试环境配置
 const testConfig = {
-  baseUrl: 'https://test-api.example.com',
+  baseUrl: 'http://106.53.112.100',
   timeout: 10000,
   apis: {
     user: {
