@@ -1,4 +1,4 @@
-const { loginWithWechatProfile, getStoredUserInfo, isLoggedIn } = require('../../utils/auth.js')
+const { getUserProfile, loginWithWechatProfile, getStoredUserInfo, isLoggedIn } = require('../../utils/auth.js')
 
 Page({
   data: {
@@ -25,10 +25,11 @@ Page({
       return
     }
 
-    this.setData({ loading: true })
-
     try {
-      const { userInfo } = await loginWithWechatProfile()
+      const profile = await getUserProfile()
+      this.setData({ loading: true })
+
+      const { userInfo } = await loginWithWechatProfile(profile)
       this.setData({
         userInfo,
         isLoggedIn: true

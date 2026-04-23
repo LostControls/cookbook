@@ -51,7 +51,7 @@ const getLoginCode = () => {
 const getUserProfile = () => {
   return new Promise((resolve, reject) => {
     wx.getUserProfile({
-      desc: 'Used to complete sign in and sync your profile',
+      desc: '用于登录',
       success: resolve,
       fail: reject
     })
@@ -69,24 +69,25 @@ const normalizeLoginData = (result = {}, profile = {}) => {
   }
 }
 
-const loginWithWechatProfile = async () => {
+const loginWithWechatProfile = async (profile) => {
+  const userProfile = profile || await getUserProfile()
   const code = await getLoginCode()
-  const profile = await getUserProfile()
+  console.log('Calling login API:', 'http://cookbook.com/user/login')
   const result = await userApi.login({
     code,
-    userInfo: profile.userInfo,
-    rawData: profile.rawData,
-    signature: profile.signature,
-    encryptedData: profile.encryptedData,
-    iv: profile.iv
+    userInfo: userProfile.userInfo,
+    rawData: userProfile.rawData,
+    signature: userProfile.signature,
+    encryptedData: userProfile.encryptedData,
+    iv: userProfile.iv
   })
 
-  const authData = normalizeLoginData(result, profile)
+  const authData = normalizeLoginData(result, userProfile)
   setAuthStorage(authData)
 
   return {
     ...authData,
-    profile,
+    profile: userProfile,
     result
   }
 }
@@ -94,6 +95,7 @@ const loginWithWechatProfile = async () => {
 module.exports = {
   DEFAULT_USER_INFO,
   clearAuthStorage,
+  getUserProfile,
   getStoredToken,
   getStoredUserInfo,
   isLoggedIn,
