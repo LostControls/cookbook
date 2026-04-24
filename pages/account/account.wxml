@@ -1,31 +1,47 @@
 <view class="container">
-  <view class="user-card">
-    <view class="user-avatar">
-      <image class="avatar-img" src="{{userInfo.avatar}}" mode="aspectFill" />
+  <view class="hero-card">
+    <view class="hero-top">
+      <text class="hero-badge">个人中心</text>
+      <button wx:if="{{!isLoggedIn}}" class="auth-btn" bindtap="onLogin">立即登录</button>
+      <button wx:else class="auth-btn auth-btn--plain" bindtap="onLogout">退出登录</button>
     </view>
-    <view class="user-info">
-      <text class="user-name">{{userInfo.nickname}}</text>
-      <text class="user-level">{{userInfo.level}}</text>
+
+    <view class="profile-main">
+      <view class="user-avatar user-avatar--large">
+        <image class="avatar-img" src="{{userInfo.avatar}}" mode="aspectFill" />
+      </view>
+      <view class="user-info">
+        <text class="user-name">{{userInfo.nickname}}</text>
+        <text class="user-level">{{userInfo.level}}</text>
+        <text class="user-location">{{userInfo.province}}{{userInfo.city ? ' / ' + userInfo.city : ''}}</text>
+      </view>
     </view>
-    <button wx:if="{{!isLoggedIn}}" class="auth-btn" bindtap="onLogin">Sign In</button>
-    <button wx:else class="auth-btn auth-btn--plain" bindtap="onLogout">Sign Out</button>
+
+    <view class="profile-tip">
+      <text class="profile-tip-text">{{isLoggedIn ? '已连接微信账号，收藏与资料会同步保存。' : '登录后可同步收藏、浏览记录和微信资料。'}}</text>
+    </view>
   </view>
 
-  <view class="stats-card">
+  <view class="stats-card stats-card--highlight">
     <view class="stat-item">
       <text class="stat-number">{{userInfo.favorites}}</text>
-      <text class="stat-label">Favorites</text>
+      <text class="stat-label">收藏</text>
     </view>
     <view class="stat-divider"></view>
     <view class="stat-item">
       <text class="stat-number">{{userInfo.recipes}}</text>
-      <text class="stat-label">Posts</text>
+      <text class="stat-label">发布</text>
     </view>
     <view class="stat-divider"></view>
     <view class="stat-item">
       <text class="stat-number">{{userInfo.followers}}</text>
-      <text class="stat-label">Following</text>
+      <text class="stat-label">关注</text>
     </view>
+  </view>
+
+  <view class="section-head">
+    <text class="section-title">常用功能</text>
+    <text class="section-subtitle">快捷进入个人相关页面</text>
   </view>
 
   <view class="menu-list">
@@ -36,7 +52,9 @@
       data-url="{{item.url}}"
       bindtap="onMenuTap"
     >
-      <view class="menu-icon">{{item.icon}}</view>
+      <view class="menu-icon-wrap">
+        <view class="menu-icon">{{item.icon}}</view>
+      </view>
       <view class="menu-content">
         <text class="menu-title">{{item.title}}</text>
         <text class="menu-desc">{{item.desc}}</text>

@@ -1,0 +1,124 @@
+<view class="page">
+  <view class="hero">
+    <view class="hero-top">
+      <view class="brand-copy">
+        <text class="hero-label">{{brandName}}</text>
+        <text class="hero-title">{{greeting}}</text>
+        <text class="hero-slogan">{{brandSlogan}}</text>
+      </view>
+      <view class="hero-action" bindtap="onQuickActionTap">去看收藏</view>
+    </view>
+
+    <view class="brand-panel">
+      <image class="brand-logo" src="/images/brand-logo.png" mode="aspectFit" />
+      <view class="brand-panel-copy">
+        <text class="brand-panel-title">今日下厨灵感</text>
+        <text class="brand-panel-desc">把想做的菜、想记的味道，都留在味食记菜谱里。</text>
+      </view>
+    </view>
+
+    <view class="search-shell">
+      <input
+        class="search-input"
+        placeholder="搜索菜谱、食材或做法"
+        value="{{searchValue}}"
+        bindinput="onSearchInput"
+        confirm-type="search"
+        bindconfirm="onSearch"
+      />
+      <view class="search-button" bindtap="onSearch">搜索</view>
+    </view>
+  </view>
+
+  <view class="section">
+    <view class="section-head">
+      <text class="section-title">常用分类</text>
+      <text class="section-desc">更快找到今天想做的菜。</text>
+    </view>
+    <view class="category-grid">
+      <view
+        class="category-item"
+        wx:for="{{categoryList}}"
+        wx:key="id"
+        data-name="{{item.name}}"
+        bindtap="onCategoryTap"
+        style="background: {{item.color}}"
+      >
+        <text class="category-icon">{{item.icon}}</text>
+        <text class="category-name">{{item.name}}</text>
+      </view>
+    </view>
+  </view>
+
+  <view class="section">
+    <view class="section-head">
+      <text class="section-title">本周专题</text>
+      <text class="section-desc">先用简洁内容沉淀体验，后续再继续接更多接口。</text>
+    </view>
+    <view class="topic-list">
+      <view
+        class="topic-card"
+        wx:for="{{topicList}}"
+        wx:key="id"
+        data-title="{{item.title}}"
+        bindtap="onTopicTap"
+      >
+        <text class="topic-tag">{{item.tag}}</text>
+        <text class="topic-title">{{item.title}}</text>
+        <text class="topic-desc">{{item.desc}}</text>
+      </view>
+    </view>
+  </view>
+
+  <view class="section">
+    <view class="section-head">
+      <text class="section-title">推荐菜谱</text>
+      <text class="section-desc">当前以静态内容完善体验，后续可以平滑接入真实菜谱数据。</text>
+    </view>
+    <view class="recipe-list">
+      <view
+        class="recipe-card"
+        wx:for="{{recommendRecipes}}"
+        wx:key="id"
+        data-id="{{item.id}}"
+        data-index="{{index}}"
+        bindtap="onRecipeTap"
+      >
+        <image class="recipe-cover" src="{{item.image}}" mode="aspectFill" />
+        <view class="recipe-content">
+          <view class="recipe-main">
+            <text class="recipe-title">{{item.title}}</text>
+            <text class="recipe-desc">{{item.desc}}</text>
+          </view>
+          <view class="recipe-footer">
+            <view class="recipe-meta">
+              <text class="recipe-pill">{{item.difficulty}}</text>
+              <text class="recipe-pill">{{item.time}}</text>
+            </view>
+            <view
+              class="favorite-toggle {{item.isFavorite ? 'favorite-toggle--active' : ''}}"
+              data-id="{{item.id}}"
+              data-index="{{index}}"
+              catchtap="onFavoriteTap"
+            >
+              {{item.isFavorite ? '已收藏' : '收藏'}}
+            </view>
+          </view>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <view class="section section--compact">
+    <view class="section-head">
+      <text class="section-title">灵感清单</text>
+      <text class="section-desc">适合后续继续补充个性化推荐和常做菜单。</text>
+    </view>
+    <view class="mini-list">
+      <view class="mini-item" wx:for="{{recentMenu}}" wx:key="id">
+        <text class="mini-title">{{item.title}}</text>
+        <text class="mini-desc">{{item.note}}</text>
+      </view>
+    </view>
+  </view>
+</view>

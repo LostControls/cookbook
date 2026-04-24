@@ -1,0 +1,25 @@
+<view class="page">
+  <view class="brand-block">
+    <image class="brand-logo" src="/images/brand-logo.png" mode="aspectFit" />
+    <text class="brand-title">味食记菜谱</text>
+    <text class="brand-slogan">好味道，好生活</text>
+    <text class="brand-desc">用心做菜，记录每一顿值得收藏的日常味道。</text>
+  </view>
+
+  <view class="agreement-row" bindtap="onToggleAgreement">
+    <view class="agreement-check {{agreed ? 'agreement-check--active' : ''}}">
+      <text wx:if="{{agreed}}" class="agreement-check-icon">✓</text>
+    </view>
+    <view class="agreement-text-wrap">
+      <text class="agreement-text">我已阅读并同意</text>
+      <text class="agreement-link" bindtap="onViewAgreement" catchtap="onViewAgreement">《用户协议》</text>
+      <text class="agreement-link" bindtap="onViewAgreement" catchtap="onViewAgreement">《隐私协议》</text>
+    </view>
+  </view>
+
+  <button class="login-button {{agreed ? 'login-button--active' : ''}}" loading="{{loading}}" bindtap="onWechatLogin">
+    {{loading ? '登录中...' : '微信登录'}}
+  </button>
+
+  <view class="skip-text" bindtap="onSkip">暂不登录</view>
+</view>

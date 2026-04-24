@@ -1,0 +1,117 @@
+.page {
+  min-height: 100vh;
+  padding: 120rpx 40rpx 80rpx;
+  box-sizing: border-box;
+  background:
+    radial-gradient(circle at top, rgba(255, 140, 72, 0.12), transparent 28%),
+    #ffffff;
+}
+
+.brand-block {
+  margin-top: 80rpx;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.brand-logo {
+  width: 168rpx;
+  height: 168rpx;
+  border-radius: 36rpx;
+  box-shadow: 0 22rpx 48rpx rgba(255, 122, 26, 0.16);
+}
+
+.brand-title {
+  margin-top: 42rpx;
+  font-size: 56rpx;
+  line-height: 1.3;
+  font-weight: 700;
+  color: #1f1611;
+}
+
+.brand-slogan {
+  margin-top: 18rpx;
+  font-size: 34rpx;
+  color: #ff7a1a;
+  letter-spacing: 4rpx;
+}
+
+.brand-desc {
+  margin-top: 24rpx;
+  font-size: 26rpx;
+  line-height: 1.9;
+  color: #8993a2;
+}
+
+.agreement-row {
+  margin-top: 96rpx;
+  padding: 10rpx 12rpx;
+  display: flex;
+  align-items: center;
+}
+
+.agreement-check {
+  width: 34rpx;
+  height: 34rpx;
+  border-radius: 50%;
+  border: 2rpx solid #c8ced8;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: all 0.18s ease;
+}
+
+.agreement-check--active {
+  background: #ff7a1a;
+  border-color: #ff7a1a;
+}
+
+.agreement-check-icon {
+  font-size: 20rpx;
+  color: #ffffff;
+}
+
+.agreement-text-wrap {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  margin-left: 14rpx;
+}
+
+.agreement-text {
+  font-size: 28rpx;
+  color: #8e96a5;
+}
+
+.agreement-link {
+  margin-left: 6rpx;
+  font-size: 28rpx;
+  color: #ff7a1a;
+}
+
+.login-button {
+  margin-top: 28rpx;
+  border-radius: 999rpx;
+  line-height: 92rpx;
+  background: #ffd8bc;
+  color: #ffffff;
+  font-size: 34rpx;
+}
+
+.login-button::after {
+  border: none;
+}
+
+.login-button--active {
+  background: #ff7a1a;
+  box-shadow: 0 20rpx 40rpx rgba(255, 122, 26, 0.22);
+}
+
+.skip-text {
+  margin-top: 24rpx;
+  text-align: center;
+  font-size: 30rpx;
+  color: #737b89;
+}

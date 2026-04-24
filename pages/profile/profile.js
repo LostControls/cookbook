@@ -1,102 +1,94 @@
-// pages/profile/profile.js
+const { DEFAULT_USER_INFO, getStoredUserInfo, isLoggedIn, logout } = require('../../utils/auth.js')
+
 Page({
   data: {
+    isLoggedIn: false,
     userInfo: {
-      nickname: '美食达人',
-      avatar: '/images/recipes/gongbao-hero.jpg',
-      level: '高级厨师',
-      recipes: 156,
-      favorites: 23,
-      followers: 1280
-    },
-    menuList: [
-      {
-        icon: '🔍',
-        title: '浏览记录',
-        desc: '查看我的浏览记录',
-        url: '/pages/browse-history/browse-history'
-      },
-      {
-        icon: '💬',
-        title: '意见反馈',
-        desc: '告诉我们你的想法',
-        url: '/pages/feedback/feedback'
-      },
-    ]
+      ...DEFAULT_USER_INFO,
+      nickname: '点击登录'
+    }
   },
 
   onLoad() {
     wx.setNavigationBarTitle({
-      title: '我的'
+      title: '个人信息'
     })
     this.loadUserInfo()
   },
 
   onShow() {
     wx.setNavigationBarTitle({
-      title: '我的'
+      title: '个人信息'
     })
-    // 每次显示页面时刷新用户信息
     this.loadUserInfo()
   },
 
-  // 加载用户信息
   loadUserInfo() {
-    // 从本地存储获取用户信息
-    const userInfo = wx.getStorageSync('userInfo')
-    if (userInfo) {
+    const storedUserInfo = getStoredUserInfo()
+    const loggedIn = isLoggedIn()
+
+    if (storedUserInfo && loggedIn) {
       this.setData({
-        userInfo: userInfo
+        isLoggedIn: true,
+        userInfo: {
+          nickname: storedUserInfo.nickName || storedUserInfo.nickname || '微信用户',
+          avatar: storedUserInfo.avatarUrl || storedUserInfo.avatar || DEFAULT_USER_INFO.avatar,
+          avatarUrl: storedUserInfo.avatarUrl || storedUserInfo.avatar || DEFAULT_USER_INFO.avatar,
+          city: storedUserInfo.city || '',
+          province: storedUserInfo.province || '',
+          country: storedUserInfo.country || ''
+        }
       })
+      return
     }
+
+    this.setData({
+      isLoggedIn: false,
+      userInfo: {
+        ...DEFAULT_USER_INFO,
+        nickname: '点击登录'
+      }
+    })
   },
 
-  // 点击菜单项
-  onMenuTap(e) {
-    const url = e.currentTarget.dataset.url
-    if (url) {
+  onSubmit() {
+    if (!this.data.isLoggedIn) {
       wx.navigateTo({
-        url: url
+        url: '/pages/auth/auth'
       })
+      return
     }
-  },
 
-  // 编辑个人资料
-  onEditProfile() {
-    wx.navigateTo({
-      url: '/pages/edit-profile/edit-profile'
+    wx.showToast({
+      title: '资料修改功能待接入',
+      icon: 'none'
     })
   },
 
-  // 登录/注册
-  onLogin() {
-    wx.navigateTo({
-      url: '/pages/login/login'
-    })
-  },
-
-  // 退出登录
   onLogout() {
     wx.showModal({
-      title: '确认退出',
-      content: '确定要退出登录吗？',
-      success: (res) => {
-        if (res.confirm) {
-          wx.removeStorageSync('userInfo')
-          wx.removeStorageSync('token')
-          this.setData({
-            userInfo: {
-              nickname: '美食达人',
-              avatar: '/images/recipes/gongbao-hero.jpg',
-              level: '高级厨师',
-              recipes: 156,
-              favorites: 23,
-              followers: 1280
-            }
-          })
+      title: '退出登录',
+      content: '确定要退出当前账号吗？',
+      success: async (res) => {
+        if (!res.confirm) return
+
+        try {
+          await logout()
+          this.loadUserInfo()
           wx.showToast({
             title: '已退出登录',
             icon: 'success'
+          })
+
+          setTimeout(() => {
+            wx.navigateBack({
+              delta: 1
+            })
+          }, 300)
+        } catch (error) {
+          wx.showToast({
+            title: '退出失败，请重试',
+            icon: 'none'
           })
         }
       }

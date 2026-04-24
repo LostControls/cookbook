@@ -1,10 +1,10 @@
-const { DEFAULT_USER_INFO, getStoredUserInfo, isLoggedIn, logout } = require('../../utils/auth.js')
+const { DEFAULT_USER_INFO, getStoredUserInfo, isLoggedIn } = require('../../utils/auth.js')
 
 Page({
   data: {
     userInfo: {
       ...DEFAULT_USER_INFO,
-      level: '未登录',
+      level: '点击登录',
       recipes: 0,
       favorites: 0,
       followers: 0
@@ -12,7 +12,7 @@ Page({
     isLoggedIn: false,
     menuList: [
       {
-        icon: '浏',
+        icon: '记',
         title: '浏览记录',
         desc: '查看最近浏览过的菜谱',
         url: '/pages/browse-history/browse-history'
@@ -40,6 +40,11 @@ Page({
     this.loadUserInfo()
   },
 
+  onPullDownRefresh() {
+    this.loadUserInfo()
+    wx.stopPullDownRefresh()
+  },
+
   loadUserInfo() {
     const storedUserInfo = getStoredUserInfo()
     const favoriteCount = (wx.getStorageSync('favoriteRecipes') || []).length
@@ -53,7 +58,7 @@ Page({
           province: storedUserInfo.province || '',
           city: storedUserInfo.city || '',
           country: storedUserInfo.country || '',
-          level: '已登录',
+          level: '点击查看个人信息',
           recipes: 0,
           favorites: favoriteCount,
           followers: 0
@@ -66,7 +71,7 @@ Page({
       isLoggedIn: false,
       userInfo: {
         ...DEFAULT_USER_INFO,
-        level: '未登录',
+        level: '点击登录',
         recipes: 0,
         favorites: favoriteCount,
         followers: 0
@@ -75,45 +80,28 @@ Page({
   },
 
   onMenuTap(e) {
-    const url = e.currentTarget.dataset.url
-    if (!url) {
+    const { url } = e.currentTarget.dataset
+    if (!url) return
+
+    wx.navigateTo({ url })
+  },
+
+  onProfileTap() {
+    if (!this.data.isLoggedIn) {
+      wx.navigateTo({
+        url: '/pages/auth/auth'
+      })
       return
     }
 
     wx.navigateTo({
-      url
+      url: '/pages/profile/profile'
     })
   },
 
-  onLogin() {
+  onAvatarTap() {
     wx.navigateTo({
-      url: '/pages/login/login'
-    })
-  },
-
-  onLogout() {
-    wx.showModal({
-      title: '退出登录',
-      content: '确定要退出当前账号吗？',
-      success: async (res) => {
-        if (!res.confirm) {
-          return
-        }
-
-        try {
-          await logout()
-          this.loadUserInfo()
-          wx.showToast({
-            title: '已退出登录',
-            icon: 'success'
-          })
-        } catch (error) {
-          wx.showToast({
-            title: '退出失败，请重试',
-            icon: 'none'
-          })
-        }
-      }
+      url: '/pages/profile/profile'
     })
   }
 })
