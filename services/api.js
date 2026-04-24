@@ -10,6 +10,9 @@ const userApi = {
   login(data) {
     return post(config.apis.user.login, data)
   },
+  logout(data = {}) {
+    return post(config.apis.user.logout, data)
+  },
   
   // 获取用户信息
   getUserInfo() {

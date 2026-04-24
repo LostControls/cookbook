@@ -1,13 +1,25 @@
 <view class="login-page">
+  <view class="login-hero">
+    <text class="hero-badge">Cookbook</text>
+    <text class="hero-title">欢迎回来</text>
+    <text class="hero-desc">登录后即可同步收藏、浏览记录和个人资料。</text>
+  </view>
+
   <view class="login-card">
     <image class="login-avatar" src="{{userInfo && userInfo.avatarUrl ? userInfo.avatarUrl : '/images/recipes/gongbao-hero.jpg'}}" mode="aspectFill" />
-    <text class="login-title">WeChat Sign In</text>
-    <text class="login-desc">Authorize once to sync your account and profile.</text>
+    <text class="login-title">微信授权登录</text>
+    <text class="login-desc">我们会使用你的微信头像、昵称、地区信息完成账号登录。</text>
+
+    <view class="login-tip-list">
+      <text class="login-tip">1. 点击按钮拉起微信授权</text>
+      <text class="login-tip">2. 前端获取 code、encryptedData、iv 等字段</text>
+      <text class="login-tip">3. 请求后端登录接口创建会话</text>
+    </view>
 
     <button class="login-btn" loading="{{loading}}" bindtap="onWechatLogin">
-      {{loading ? 'Signing in...' : 'Sign in with WeChat'}}
+      {{loading ? '登录中...' : '微信一键登录'}}
     </button>
 
-    <text wx:if="{{isLoggedIn}}" class="login-status">This device is already signed in. Re-authorize to refresh profile data.</text>
+    <text wx:if="{{isLoggedIn}}" class="login-status">当前设备已完成登录，再次授权可更新头像昵称和地区信息。</text>
   </view>
 </view>

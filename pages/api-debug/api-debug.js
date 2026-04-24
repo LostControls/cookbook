@@ -35,20 +35,20 @@ Page({
   },
 
   async getUserInfo() {
-    this.updateRequestState('GET /user/info', '请求中...')
+    this.updateRequestState('GET /api/user/profile', '请求中...')
     try {
       const result = await userApi.getUserInfo()
       this.setData({
         userInfoText: this.formatResult(result.data)
       })
-      this.updateRequestState('GET /user/info', '成功')
+      this.updateRequestState('GET /api/user/profile', '成功')
       wx.showToast({
         title: '用户信息获取成功',
         icon: 'success'
       })
     } catch (error) {
       console.error('获取用户信息失败:', error)
-      this.updateRequestState('GET /user/info', '失败')
+      this.updateRequestState('GET /api/user/profile', '失败')
     }
   },
 

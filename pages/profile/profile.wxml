@@ -1,29 +1,23 @@
-<!--pages/profile/profile.wxml-->
-<view class="container">
-  <!-- 用户信息卡片 -->
-  <view class="user-card">
-    <view class="user-avatar">
-      <image class="avatar-img" src="{{userInfo.avatar}}" mode="aspectFill" />
+<view class="page">
+  <view class="form-card">
+    <view class="field-row">
+      <text class="field-label">用户名</text>
+      <text class="field-required">*</text>
+      <view class="field-input">{{userInfo.nickname}}</view>
     </view>
-    <view class="user-info">
-      <text class="user-name">{{userInfo.nickname}}</text>
-    </view>
-  </view>
-  <!-- 功能菜单 -->
-  <view class="menu-list">
-    <view 
-      class="menu-item" 
-      wx:for="{{menuList}}" 
-      wx:key="title"
-      data-url="{{item.url}}"
-      bindtap="onMenuTap"
-    >
-      <view class="menu-icon">{{item.icon}}</view>
-      <view class="menu-content">
-        <text class="menu-title">{{item.title}}</text>
-        <text class="menu-desc">{{item.desc}}</text>
+
+    <view class="field-row field-row--avatar">
+      <text class="field-label">用户头像</text>
+      <text class="field-required">*</text>
+      <view class="avatar-preview">
+        <image class="avatar-image" src="{{userInfo.avatar}}" mode="aspectFill" />
       </view>
-      <view class="menu-arrow">></view>
     </view>
   </view>
+
+  <button class="submit-btn" bindtap="onSubmit">
+    {{isLoggedIn ? '修改' : '去登录'}}
+  </button>
+
+  <button wx:if="{{isLoggedIn}}" class="logout-btn" bindtap="onLogout">退出登录</button>
 </view>

@@ -8,8 +8,9 @@ const devConfig = {
   apis: {
     // 用户相关接口
     user: {
-      login: '/user/login',
-      getUserInfo: '/user/info',
+      login: '/api/user/login',
+      logout: '/api/user/logout',
+      getUserInfo: '/api/user/profile',
       updateUserInfo: '/user/update'
     },
     // 菜谱相关接口
@@ -35,8 +36,9 @@ const prodConfig = {
   // 生产环境接口
   apis: {
     user: {
-      login: '/user/login',
-      getUserInfo: '/user/info',
+      login: '/api/user/login',
+      logout: '/api/user/logout',
+      getUserInfo: '/api/user/profile',
       updateUserInfo: '/user/update'
     },
     recipe: {
@@ -59,8 +61,9 @@ const testConfig = {
   timeout: 10000,
   apis: {
     user: {
-      login: '/user/login',
-      getUserInfo: '/user/info',
+      login: '/api/user/login',
+      logout: '/api/user/logout',
+      getUserInfo: '/api/user/profile',
       updateUserInfo: '/user/update'
     },
     recipe: {

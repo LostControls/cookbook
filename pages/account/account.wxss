@@ -1,17 +1,25 @@
 .container {
-  background-color: #f8f9fa;
+  background:
+    radial-gradient(circle at top left, rgba(255, 207, 150, 0.35), transparent 28%),
+    linear-gradient(180deg, #fff8ee 0%, #f8faf8 36%, #f4f7fb 100%);
   min-height: 100vh;
-  padding: 0;
+  padding: 28rpx 24rpx 40rpx;
   width: 100%;
+  box-sizing: border-box;
 }
 
-.user-card {
+.hero-card {
+  background: linear-gradient(135deg, #ffffff 0%, #fffaf2 100%);
+  padding: 28rpx;
+  margin-bottom: 20rpx;
+  border-radius: 32rpx;
+  box-shadow: 0 24rpx 56rpx rgba(15, 23, 42, 0.08);
+}
+
+.hero-top {
   display: flex;
   align-items: center;
-  background-color: #fff;
-  padding: 30rpx 20rpx;
-  margin-bottom: 10rpx;
-  box-shadow: 0 2rpx 10rpx rgba(0, 0, 0, 0.08);
+  justify-content: space-between;
 }
 
 .user-avatar {
@@ -22,9 +30,32 @@
   margin-right: 20rpx;
 }
 
+.user-avatar--large {
+  width: 132rpx;
+  height: 132rpx;
+  border: 8rpx solid rgba(255, 255, 255, 0.92);
+  box-shadow: 0 16rpx 30rpx rgba(237, 138, 33, 0.16);
+}
+
 .avatar-img {
   width: 100%;
   height: 100%;
+}
+
+.hero-badge {
+  display: inline-flex;
+  padding: 10rpx 20rpx;
+  border-radius: 999rpx;
+  background-color: #fff4df;
+  color: #bf6f16;
+  font-size: 22rpx;
+  letter-spacing: 2rpx;
+}
+
+.profile-main {
+  display: flex;
+  align-items: center;
+  margin-top: 30rpx;
 }
 
 .user-info {
@@ -42,22 +73,42 @@
 
 .user-level {
   font-size: 24rpx;
-  color: #3cc51f;
-  background-color: #e8f5e8;
+  color: #17824c;
+  background-color: #e7f8ee;
   padding: 4rpx 12rpx;
   border-radius: 10rpx;
   align-self: flex-start;
 }
 
+.user-location {
+  margin-top: 14rpx;
+  font-size: 24rpx;
+  color: #7a8797;
+}
+
+.profile-tip {
+  margin-top: 28rpx;
+  padding: 20rpx 22rpx;
+  border-radius: 24rpx;
+  background-color: rgba(255, 247, 230, 0.88);
+}
+
+.profile-tip-text {
+  font-size: 24rpx;
+  color: #8d6123;
+  line-height: 1.8;
+}
+
 .auth-btn {
   margin: 0;
-  padding: 0 28rpx;
-  min-width: 156rpx;
-  line-height: 68rpx;
+  padding: 0 30rpx;
+  min-width: 180rpx;
+  line-height: 72rpx;
   border-radius: 999rpx;
-  background-color: #16a34a;
+  background: linear-gradient(135deg, #1ea65a 0%, #0f8547 100%);
   color: #fff;
   font-size: 26rpx;
+  box-shadow: 0 14rpx 28rpx rgba(22, 163, 74, 0.18);
 }
 
 .auth-btn::after {
@@ -65,16 +116,22 @@
 }
 
 .auth-btn--plain {
-  background-color: #eef2f7;
+  background: #eef2f7;
   color: #475569;
+  box-shadow: none;
 }
 
 .stats-card {
   display: flex;
   background-color: #fff;
   padding: 30rpx 20rpx;
-  margin-bottom: 10rpx;
-  box-shadow: 0 2rpx 10rpx rgba(0, 0, 0, 0.08);
+  margin-bottom: 20rpx;
+  border-radius: 28rpx;
+  box-shadow: 0 18rpx 40rpx rgba(15, 23, 42, 0.06);
+}
+
+.stats-card--highlight {
+  background: linear-gradient(135deg, #ffffff 0%, #f7fbf7 100%);
 }
 
 .stat-item {
@@ -87,13 +144,13 @@
 .stat-number {
   font-size: 40rpx;
   font-weight: bold;
-  color: #333;
+  color: #1f2937;
   margin-bottom: 8rpx;
 }
 
 .stat-label {
   font-size: 24rpx;
-  color: #666;
+  color: #708090;
 }
 
 .stat-divider {
@@ -105,14 +162,33 @@
 .menu-list {
   background-color: #fff;
   margin-bottom: 10rpx;
-  box-shadow: 0 2rpx 10rpx rgba(0, 0, 0, 0.08);
+  border-radius: 28rpx;
+  box-shadow: 0 18rpx 40rpx rgba(15, 23, 42, 0.06);
   overflow: hidden;
+}
+
+.section-head {
+  margin: 10rpx 6rpx 18rpx;
+}
+
+.section-title {
+  display: block;
+  font-size: 32rpx;
+  font-weight: 600;
+  color: #1f2937;
+}
+
+.section-subtitle {
+  display: block;
+  margin-top: 8rpx;
+  font-size: 24rpx;
+  color: #7a8797;
 }
 
 .menu-item {
   display: flex;
   align-items: center;
-  padding: 30rpx 20rpx;
+  padding: 32rpx 24rpx;
   border-bottom: 1rpx solid #f0f0f0;
 }
 
@@ -124,11 +200,22 @@
   background-color: #f8f9fa;
 }
 
+.menu-icon-wrap {
+  width: 84rpx;
+  height: 84rpx;
+  border-radius: 24rpx;
+  background: linear-gradient(180deg, #fff5e8 0%, #fffaf1 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 20rpx;
+}
+
 .menu-icon {
   font-size: 40rpx;
-  margin-right: 20rpx;
   width: 60rpx;
   text-align: center;
+  color: #d57f24;
 }
 
 .menu-content {
@@ -145,10 +232,10 @@
 
 .menu-desc {
   font-size: 24rpx;
-  color: #999;
+  color: #94a3b8;
 }
 
 .menu-arrow {
-  font-size: 24rpx;
-  color: #ccc;
+  font-size: 34rpx;
+  color: #c5ced8;
 }

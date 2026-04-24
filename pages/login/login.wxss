@@ -1,31 +1,66 @@
 .login-page {
   min-height: 100vh;
-  padding: 48rpx 32rpx;
-  background: linear-gradient(180deg, #fff8ee 0%, #f7fbf7 100%);
+  padding: 40rpx 32rpx 64rpx;
+  background:
+    radial-gradient(circle at top right, rgba(255, 208, 141, 0.45), transparent 34%),
+    linear-gradient(180deg, #fff7ea 0%, #fffdf8 38%, #f3f8f4 100%);
   box-sizing: border-box;
 }
 
+.login-hero {
+  padding: 36rpx 8rpx 0;
+}
+
+.hero-badge {
+  display: inline-flex;
+  padding: 10rpx 20rpx;
+  border-radius: 999rpx;
+  background-color: rgba(255, 255, 255, 0.72);
+  color: #b86a18;
+  font-size: 22rpx;
+  letter-spacing: 2rpx;
+}
+
+.hero-title {
+  display: block;
+  margin-top: 28rpx;
+  font-size: 56rpx;
+  font-weight: 700;
+  color: #1f2937;
+}
+
+.hero-desc {
+  display: block;
+  margin-top: 18rpx;
+  font-size: 28rpx;
+  line-height: 1.8;
+  color: #5f6b7a;
+}
+
 .login-card {
-  margin-top: 120rpx;
+  margin-top: 48rpx;
   background-color: #ffffff;
-  border-radius: 28rpx;
-  padding: 56rpx 40rpx;
-  box-shadow: 0 18rpx 48rpx rgba(15, 23, 42, 0.08);
+  border-radius: 36rpx;
+  padding: 56rpx 40rpx 44rpx;
+  box-shadow: 0 24rpx 56rpx rgba(15, 23, 42, 0.08);
   display: flex;
   flex-direction: column;
   align-items: center;
   text-align: center;
+  position: relative;
+  overflow: hidden;
 }
 
 .login-avatar {
-  width: 140rpx;
-  height: 140rpx;
+  width: 156rpx;
+  height: 156rpx;
   border-radius: 50%;
   margin-bottom: 28rpx;
+  border: 8rpx solid rgba(22, 163, 74, 0.10);
 }
 
 .login-title {
-  font-size: 40rpx;
+  font-size: 42rpx;
   font-weight: 600;
   color: #1f2937;
 }
@@ -37,14 +72,32 @@
   color: #6b7280;
 }
 
+.login-tip-list {
+  width: 100%;
+  margin-top: 32rpx;
+  padding: 24rpx;
+  border-radius: 24rpx;
+  background: linear-gradient(180deg, #fff9f0 0%, #fffdf8 100%);
+  text-align: left;
+  box-sizing: border-box;
+}
+
+.login-tip {
+  display: block;
+  font-size: 24rpx;
+  line-height: 1.9;
+  color: #8a5b1e;
+}
+
 .login-btn {
   width: 100%;
   margin-top: 48rpx;
-  background-color: #16a34a;
+  background: linear-gradient(135deg, #1fa85b 0%, #128548 100%);
   color: #ffffff;
   border-radius: 999rpx;
   font-size: 30rpx;
   line-height: 92rpx;
+  box-shadow: 0 16rpx 32rpx rgba(22, 163, 74, 0.22);
 }
 
 .login-btn::after {

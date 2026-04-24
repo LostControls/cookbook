@@ -1,0 +1,72 @@
+<view class="page">
+  <view class="hero-card">
+    <view class="hero-top">
+      <text class="hero-badge">个人中心</text>
+    </view>
+
+    <view class="brand-strip">
+      <image class="brand-logo" src="/images/brand-logo.png" mode="aspectFit" />
+      <view class="brand-strip-copy">
+        <text class="brand-strip-title">味食记菜谱</text>
+        <text class="brand-strip-desc">把你的收藏、偏好和做菜记录都留在这里。</text>
+      </view>
+    </view>
+
+    <view class="profile-main" bindtap="onProfileTap">
+      <view class="avatar-shell" catchtap="onAvatarTap">
+        <image class="avatar" src="{{userInfo.avatar}}" mode="aspectFill" />
+      </view>
+      <view class="profile-info">
+        <text class="profile-name">{{userInfo.nickname}}</text>
+        <text class="profile-badge">{{userInfo.level}}</text>
+        <text class="profile-location">{{userInfo.province}}{{userInfo.city ? ' / ' + userInfo.city : ''}}</text>
+      </view>
+      <text class="profile-arrow">></text>
+    </view>
+
+    <view class="profile-tip">
+      <text class="profile-tip-text">{{isLoggedIn ? '当前账号已连接微信，可继续完善资料与同步收藏。' : '点击资料区域完成登录，之后可查看和管理个人信息。'}}</text>
+    </view>
+  </view>
+
+  <view class="stats-card">
+    <view class="stat-item">
+      <text class="stat-number">{{userInfo.favorites}}</text>
+      <text class="stat-label">收藏</text>
+    </view>
+    <view class="stat-divider"></view>
+    <view class="stat-item">
+      <text class="stat-number">{{userInfo.recipes}}</text>
+      <text class="stat-label">发布</text>
+    </view>
+    <view class="stat-divider"></view>
+    <view class="stat-item">
+      <text class="stat-number">{{userInfo.followers}}</text>
+      <text class="stat-label">关注</text>
+    </view>
+  </view>
+
+  <view class="section-head">
+    <text class="section-title">常用功能</text>
+    <text class="section-desc">保留简洁结构，方便后续继续补更多个人相关能力。</text>
+  </view>
+
+  <view class="menu-list">
+    <view
+      class="menu-item"
+      wx:for="{{menuList}}"
+      wx:key="title"
+      data-url="{{item.url}}"
+      bindtap="onMenuTap"
+    >
+      <view class="menu-icon-wrap">
+        <text class="menu-icon">{{item.icon}}</text>
+      </view>
+      <view class="menu-content">
+        <text class="menu-title">{{item.title}}</text>
+        <text class="menu-desc">{{item.desc}}</text>
+      </view>
+      <text class="menu-arrow">></text>
+    </view>
+  </view>
+</view>

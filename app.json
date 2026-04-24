@@ -1,8 +1,12 @@
 {
   "pages": [
-    "pages/index/index",
+    "pages/home/home",
     "pages/category/category",
     "pages/favorite/favorite",
+    "pages/member/member",
+    "pages/profile/profile",
+    "pages/auth/auth",
+    "pages/index/index",
     "pages/account/account",
     "pages/login/login",
     "pages/api-debug/api-debug",
@@ -14,38 +18,38 @@
   ],
   "window": {
     "backgroundTextStyle": "light",
-    "navigationBarBackgroundColor": "#fff",
-    "navigationBarTitleText": "菜谱大全",
+    "navigationBarBackgroundColor": "#ffffff",
+    "navigationBarTitleText": "味食记菜谱",
     "navigationBarTextStyle": "black"
   },
   "tabBar": {
-    "color": "#7A7E83",
-    "selectedColor": "#3cc51f",
+    "color": "#8A8F98",
+    "selectedColor": "#FF7A1A",
     "borderStyle": "black",
     "backgroundColor": "#ffffff",
     "list": [
       {
-        "pagePath": "pages/index/index",
+        "pagePath": "pages/home/home",
         "iconPath": "images/home.png",
         "selectedIconPath": "images/home-active.png",
         "text": "首页"
       },
       {
+        "pagePath": "pages/category/category",
         "iconPath": "images/category.png",
         "selectedIconPath": "images/category-active.png",
-        "pagePath": "pages/category/category",
         "text": "分类"
       },
       {
+        "pagePath": "pages/favorite/favorite",
         "iconPath": "images/favorite.png",
         "selectedIconPath": "images/favorite-active.png",
-        "pagePath": "pages/favorite/favorite",
         "text": "收藏"
       },
       {
+        "pagePath": "pages/member/member",
         "iconPath": "images/profile.png",
         "selectedIconPath": "images/profile-active.png",
-        "pagePath": "pages/account/account",
         "text": "我的"
       }
     ]
