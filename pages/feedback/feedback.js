@@ -1,4 +1,6 @@
 // pages/feedback/feedback.js
+const { userApi } = require('../../services/api.js')
+
 Page({
   data: {
     subject: '',
@@ -47,33 +49,31 @@ Page({
   },
 
   // 提交
-  onSubmit() {
+  async onSubmit() {
     const { subject, content, contact } = this.data
     if (!subject || !content) {
       wx.showToast({ title: '请填写标题和内容', icon: 'none' })
       return
     }
 
-    // 本地存储模拟提交
-    const item = {
-      id: Date.now(),
-      subject,
-      content,
-      contact,
-      createdAt: new Date().toISOString()
+    try {
+      await userApi.submitFeedback({
+        title: subject,
+        content,
+        contact
+      })
+
+      // 清空草稿与表单
+      wx.removeStorageSync('feedback_draft')
+      this.setData({ subject: '', content: '', contact: '', showSuccess: true })
+      wx.showToast({ title: '提交成功', icon: 'success' })
+
+      // 3秒后隐藏成功提示
+      setTimeout(() => {
+        this.setData({ showSuccess: false })
+      }, 3000)
+    } catch (error) {
+      wx.showToast({ title: '提交失败', icon: 'none' })
     }
-    const list = wx.getStorageSync('feedback_list') || []
-    list.unshift(item)
-    wx.setStorageSync('feedback_list', list)
-
-    // 清空草稿与表单
-    wx.removeStorageSync('feedback_draft')
-    this.setData({ subject: '', content: '', contact: '', showSuccess: true })
-    wx.showToast({ title: '提交成功', icon: 'success' })
-
-    // 3秒后隐藏成功提示
-    setTimeout(() => {
-      this.setData({ showSuccess: false })
-    }, 3000)
   }
 })
