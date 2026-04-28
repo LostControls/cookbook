@@ -3,7 +3,14 @@
     <view class="field-row">
       <text class="field-label">用户名</text>
       <text class="field-required">*</text>
-      <view class="field-input">{{userInfo.nickname}}</view>
+      <input
+        class="field-input"
+        type="nickname"
+        maxlength="20"
+        placeholder="请输入用户名"
+        value="{{nickname}}"
+        bindinput="onNicknameInput"
+      />
     </view>
 
     <view class="field-row field-row--avatar">
@@ -15,7 +22,7 @@
     </view>
   </view>
 
-  <button class="submit-btn" bindtap="onSubmit">
+  <button class="submit-btn" bindtap="onSubmit" loading="{{submitting}}">
     {{isLoggedIn ? '修改' : '去登录'}}
   </button>
 

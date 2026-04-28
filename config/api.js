@@ -11,7 +11,9 @@ const devConfig = {
       login: '/api/user/login',
       logout: '/api/user/logout',
       getUserInfo: '/api/user/profile',
-      updateUserInfo: '/user/update'
+      updateUserInfo: '/api/user/profile',
+      favoriteCount: '/api/user/favorites/count',
+      feedback: '/api/user/feedback'
     },
     // 菜谱相关接口
     recipe: {
@@ -39,7 +41,9 @@ const prodConfig = {
       login: '/api/user/login',
       logout: '/api/user/logout',
       getUserInfo: '/api/user/profile',
-      updateUserInfo: '/user/update'
+      updateUserInfo: '/api/user/profile',
+      favoriteCount: '/api/user/favorites/count',
+      feedback: '/api/user/feedback'
     },
     recipe: {
       list: '/recipe/list',
@@ -64,7 +68,9 @@ const testConfig = {
       login: '/api/user/login',
       logout: '/api/user/logout',
       getUserInfo: '/api/user/profile',
-      updateUserInfo: '/user/update'
+      updateUserInfo: '/api/user/profile',
+      favoriteCount: '/api/user/favorites/count',
+      feedback: '/api/user/feedback'
     },
     recipe: {
       list: '/recipe/list',
