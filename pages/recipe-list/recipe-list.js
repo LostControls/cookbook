@@ -1,5 +1,88 @@
-// pages/recipe-list/recipe-list.js
-// 当前页面使用本地静态数据，无需请求接口
+const { recipeApi, userApi } = require('../../services/api.js')
+const { isLoggedIn } = require('../../utils/auth.js')
+
+const normalizeRecipe = (item = {}, favoriteIds = []) => {
+  const id = item.id || item.recipe_id || item.recipeId || 0
+  return {
+    id,
+    title: item.title || item.name || item.recipe_name || '未命名菜谱',
+    desc: item.description || item.summary || item.intro || item.content || '先把简单、好做、好吃的菜整理出来。',
+    image: item.image || item.cover || item.cover_url || item.thumb || item.thumbnail || '/images/recipes/gongbao-hero.jpg',
+    difficulty: item.difficulty || item.level || '简单',
+    time: item.time || item.cook_time || item.duration || '15 分钟',
+    author: item.author || item.nickname || item.user_name || '味食记',
+    favoriteCount: Number(item.favorite_count || item.favorites_count || 0),
+    isFavorite: favoriteIds.includes(id)
+  }
+}
+
+const getRecipeListFromPayload = (payload = {}) => {
+  if (Array.isArray(payload)) {
+    return payload
+  }
+
+  if (Array.isArray(payload.list)) {
+    return payload.list
+  }
+
+  if (Array.isArray(payload.data)) {
+    return payload.data
+  }
+
+  if (Array.isArray(payload.items)) {
+    return payload.items
+  }
+
+  return []
+}
+
+const getPaginationFromPayload = (payload = {}, listLength = 0, page = 1, pageSize = 10) => {
+  const pagination = payload.pagination || payload.meta || {}
+  const total = Number(
+    pagination.total ||
+    payload.total ||
+    payload.count ||
+    0
+  )
+  const currentPage = Number(
+    pagination.page ||
+    pagination.current_page ||
+    payload.page ||
+    payload.current_page ||
+    page
+  )
+  const resolvedPageSize = Number(
+    pagination.page_size ||
+    pagination.per_page ||
+    payload.page_size ||
+    payload.per_page ||
+    pageSize
+  )
+  const hasMoreFromApi = pagination.has_more
+  const lastPage = Number(
+    pagination.last_page ||
+    payload.last_page ||
+    0
+  )
+
+  let hasMore = false
+  if (typeof hasMoreFromApi === 'boolean') {
+    hasMore = hasMoreFromApi
+  } else if (lastPage > 0) {
+    hasMore = currentPage < lastPage
+  } else if (total > 0) {
+    hasMore = currentPage * resolvedPageSize < total
+  } else {
+    hasMore = listLength >= resolvedPageSize
+  }
+
+  return {
+    total,
+    page: currentPage,
+    pageSize: resolvedPageSize,
+    hasMore
+  }
+}
 
 Page({
   data: {
@@ -7,83 +90,147 @@ Page({
     categoryName: '',
     searchValue: '',
     recipes: [],
-    allRecipes: []
+    page: 1,
+    pageSize: 10,
+    total: 0,
+    hasMore: true,
+    loading: false,
+    loadingText: '加载中...',
+    initialized: false
   },
 
   onLoad(options) {
     const { categoryId = '', categoryName = '' } = options || {}
-    this.setData({ categoryId, categoryName })
-    wx.setNavigationBarTitle({ title: categoryName || '分类菜谱' })
-    this.buildStaticRecipes()
+    const decodedName = decodeURIComponent(categoryName || '')
+    this.setData({
+      categoryId: categoryId ? Number(categoryId) : null,
+      categoryName: decodedName
+    })
+
+    wx.setNavigationBarTitle({
+      title: decodedName || '菜谱列表'
+    })
+
+    this.loadRecipes(true)
   },
 
   onShow() {
-    wx.setNavigationBarTitle({ title: this.data.categoryName || '分类菜谱' })
+    wx.setNavigationBarTitle({
+      title: this.data.categoryName || '菜谱列表'
+    })
   },
 
-  // 本地静态数据构建
-  buildStaticRecipes() {
-    const name = this.data.categoryName || ''
-    const common = [
-      { id: 101, title: '宫保鸡丁', image: '/images/recipes/gongbao-hero.jpg', difficulty: '简单', time: '30分钟', rating: 4.8, author: '美食达人' },
-      { id: 102, title: '鱼香肉丝', image: '/images/recipes/gongbao-hero.jpg', difficulty: '中等', time: '40分钟', rating: 4.7, author: '川菜小能手' },
-      { id: 103, title: '麻婆豆腐', image: '/images/recipes/gongbao-hero.jpg', difficulty: '简单', time: '25分钟', rating: 4.6, author: '豆腐控' },
-      { id: 104, title: '回锅肉', image: '/images/recipes/gongbao-hero.jpg', difficulty: '中等', time: '45分钟', rating: 4.9, author: '厨神小王' }
-    ]
-    const catalog = {
-      '川菜': common,
-      '粤菜': [
-        { id: 201, title: '白切鸡', image: '/images/recipes/gongbao-hero.jpg', difficulty: '简单', time: '35分钟', rating: 4.7, author: '广味小厨' },
-        { id: 202, title: '清蒸鱼', image: '/images/recipes/gongbao-hero.jpg', difficulty: '简单', time: '25分钟', rating: 4.8, author: '海鲜爱好者' },
-        { id: 203, title: '叉烧肉', image: '/images/recipes/gongbao-hero.jpg', difficulty: '中等', time: '60分钟', rating: 4.6, author: '烧腊达人' }
-      ],
-      '湘菜': [
-        { id: 301, title: '剁椒鱼头', image: '/images/recipes/gongbao-hero.jpg', difficulty: '中等', time: '45分钟', rating: 4.8, author: '湘味十足' },
-        { id: 302, title: '辣椒炒肉', image: '/images/recipes/gongbao-hero.jpg', difficulty: '简单', time: '20分钟', rating: 4.7, author: '辣味控' }
-      ]
+  onPullDownRefresh() {
+    this.loadRecipes(true).finally(() => {
+      wx.stopPullDownRefresh()
+    })
+  },
+
+  onReachBottom() {
+    if (!this.data.loading && this.data.hasMore) {
+      this.loadRecipes(false)
     }
-    const list = catalog[name] || common
-    this.setData({ recipes: list, allRecipes: list })
   },
 
-  // 搜索输入
-  onSearchInput(e) {
-    this.setData({ searchValue: e.detail.value })
-  },
-
-  // 搜索（本地过滤）
-  onSearch() {
-    const keyword = (this.data.searchValue || '').trim()
-    if (!keyword) {
-      this.setData({ recipes: this.data.allRecipes })
+  async loadRecipes(reset = false) {
+    if (this.data.loading) {
       return
     }
-    const list = (this.data.allRecipes || []).filter(r =>
-      (r.title || '').includes(keyword) || (r.author || '').includes(keyword)
-    )
-    this.setData({ recipes: list })
+
+    const nextPage = reset ? 1 : this.data.page + 1
+    this.setData({
+      loading: true,
+      loadingText: reset ? '正在刷新...' : '正在加载更多...'
+    })
+
+    try {
+      const result = await recipeApi.getRecipeList({
+        category_id: this.data.categoryId || '',
+        keyword: (this.data.searchValue || '').trim(),
+        page: nextPage,
+        page_size: this.data.pageSize
+      })
+
+      const payload = result.data || {}
+      const rawList = getRecipeListFromPayload(payload)
+      const favoriteIds = []
+      const list = rawList.map((item) => normalizeRecipe(item, favoriteIds))
+      const pagination = getPaginationFromPayload(payload, list.length, nextPage, this.data.pageSize)
+
+      this.setData({
+        recipes: reset ? list : this.data.recipes.concat(list),
+        page: pagination.page,
+        pageSize: pagination.pageSize,
+        total: pagination.total,
+        hasMore: pagination.hasMore,
+        loading: false,
+        loadingText: pagination.hasMore ? '上拉加载更多' : '没有更多了',
+        initialized: true
+      })
+    } catch (error) {
+      this.setData({
+        loading: false,
+        loadingText: '加载失败，请稍后重试',
+        initialized: true
+      })
+      wx.showToast({
+        title: '菜谱加载失败',
+        icon: 'none'
+      })
+    }
   },
 
-  // 点击菜谱进入详情
+  onSearchInput(e) {
+    this.setData({
+      searchValue: e.detail.value || ''
+    })
+  },
+
+  onSearch() {
+    this.loadRecipes(true)
+  },
+
   onRecipeTap(e) {
     const recipeId = e.currentTarget.dataset.id
-    wx.navigateTo({ url: `/pages/recipe-detail/recipe-detail?id=${recipeId}` })
+    if (!recipeId) {
+      return
+    }
+
+    wx.navigateTo({
+      url: `/pages/recipe-detail/recipe-detail?id=${recipeId}`
+    })
   },
 
-  // 收藏菜谱（本地）
   onFavoriteTap(e) {
     const recipeId = e.currentTarget.dataset.id
     const index = e.currentTarget.dataset.index
-    let favorites = wx.getStorageSync('favoriteRecipes') || []
     const recipe = this.data.recipes[index]
-    const isFavorited = favorites.some(item => item.id === recipeId)
-    if (isFavorited) {
-      favorites = favorites.filter(item => item.id !== recipeId)
-      wx.showToast({ title: '已取消收藏', icon: 'success' })
-    } else {
-      favorites.push(recipe)
-      wx.showToast({ title: '已添加收藏', icon: 'success' })
+
+    if (!isLoggedIn()) {
+      wx.navigateTo({
+        url: '/pages/auth/auth'
+      })
+      return
     }
-    wx.setStorageSync('favoriteRecipes', favorites)
+
+    const request = recipe.isFavorite
+      ? userApi.removeFavorite(recipeId)
+      : userApi.addFavorite({ recipe_id: recipeId })
+
+    request.then(() => {
+      const recipes = this.data.recipes.slice()
+      recipes[index] = {
+        ...recipe,
+        isFavorite: !recipe.isFavorite,
+        favoriteCount: Math.max(0, Number(recipe.favoriteCount || 0) + (recipe.isFavorite ? -1 : 1))
+      }
+
+      this.setData({ recipes })
+
+      wx.showToast({
+        title: recipe.isFavorite ? '已取消收藏' : '已加入收藏',
+        icon: 'none'
+      })
+    }).catch(() => {})
   }
 })
