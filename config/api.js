@@ -12,21 +12,24 @@ const devConfig = {
       logout: '/api/user/logout',
       getUserInfo: '/api/user/profile',
       updateUserInfo: '/api/user/profile',
+      favoriteList: '/api/user/favorites',
+      addFavorite: '/api/user/favorites',
+      removeFavorite: '/api/user/favorites',
       favoriteCount: '/api/user/favorites/count',
       feedback: '/api/user/feedback'
     },
     // 菜谱相关接口
     recipe: {
-      list: '/recipe/list',
-      detail: '/recipe/detail',
-      create: '/recipe/create',
-      update: '/recipe/update',
-      delete: '/recipe/delete'
+      list: '/api/recipes',
+      detail: '/api/recipes',
+      create: '/api/recipes',
+      update: '/api/recipes',
+      delete: '/api/recipes'
     },
     // 分类相关接口
     category: {
-      list: '/category/list',
-      create: '/category/create'
+      list: '/api/categories',
+      create: '/api/categories'
     }
   }
 }
@@ -42,19 +45,22 @@ const prodConfig = {
       logout: '/api/user/logout',
       getUserInfo: '/api/user/profile',
       updateUserInfo: '/api/user/profile',
+      favoriteList: '/api/user/favorites',
+      addFavorite: '/api/user/favorites',
+      removeFavorite: '/api/user/favorites',
       favoriteCount: '/api/user/favorites/count',
       feedback: '/api/user/feedback'
     },
     recipe: {
-      list: '/recipe/list',
-      detail: '/recipe/detail',
-      create: '/recipe/create',
-      update: '/recipe/update',
-      delete: '/recipe/delete'
+      list: '/api/recipes',
+      detail: '/api/recipes',
+      create: '/api/recipes',
+      update: '/api/recipes',
+      delete: '/api/recipes'
     },
     category: {
-      list: '/category/list',
-      create: '/category/create'
+      list: '/api/categories',
+      create: '/api/categories'
     }
   }
 }
@@ -69,19 +75,22 @@ const testConfig = {
       logout: '/api/user/logout',
       getUserInfo: '/api/user/profile',
       updateUserInfo: '/api/user/profile',
+      favoriteList: '/api/user/favorites',
+      addFavorite: '/api/user/favorites',
+      removeFavorite: '/api/user/favorites',
       favoriteCount: '/api/user/favorites/count',
       feedback: '/api/user/feedback'
     },
     recipe: {
-      list: '/recipe/list',
-      detail: '/recipe/detail',
-      create: '/recipe/create',
-      update: '/recipe/update',
-      delete: '/recipe/delete'
+      list: '/api/recipes',
+      detail: '/api/recipes',
+      create: '/api/recipes',
+      update: '/api/recipes',
+      delete: '/api/recipes'
     },
     category: {
-      list: '/category/list',
-      create: '/category/create'
+      list: '/api/categories',
+      create: '/api/categories'
     }
   }
 }

@@ -18,6 +18,18 @@ const userApi = {
     return put(config.apis.user.updateUserInfo, data)
   },
 
+  getFavoriteList(params) {
+    return get(config.apis.user.favoriteList, params)
+  },
+
+  addFavorite(data) {
+    return post(config.apis.user.addFavorite, data)
+  },
+
+  removeFavorite(recipeId) {
+    return del(`${config.apis.user.removeFavorite}/${recipeId}`)
+  },
+
   getFavoriteCount() {
     return get(config.apis.user.favoriteCount)
   },

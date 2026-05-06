@@ -1,64 +1,115 @@
-// pages/favorite/favorite.js
-const DEMO_FAVORITE_IDS = [101, 102, 103, 104]
+const { userApi } = require('../../services/api.js')
+const { isLoggedIn } = require('../../utils/auth.js')
 
-const isDemoFavoriteList = (favorites = []) => {
-  if (!Array.isArray(favorites) || favorites.length !== DEMO_FAVORITE_IDS.length) {
-    return false
-  }
-
-  const ids = favorites.map((item) => item.id).sort((a, b) => a - b)
-  return ids.every((id, index) => id === DEMO_FAVORITE_IDS[index])
-}
+const normalizeFavorite = (item = {}) => ({
+  ...item,
+  id: item.id || item.recipe_id || item.recipeId || 0,
+  image: item.image || item.cover || item.cover_url || item.thumb || item.thumbnail || '/images/recipes/gongbao-hero.jpg',
+  title: item.title || item.name || item.recipe_name || '未命名菜谱'
+})
 
 Page({
   data: {
     favoriteRecipes: [],
-    isEmpty: true
+    isEmpty: true,
+    page: 1,
+    pageSize: 10,
+    total: 0,
+    hasMore: true,
+    loading: false
   },
 
   onLoad() {
     wx.setNavigationBarTitle({
       title: '收藏'
     })
-    this.loadFavoriteRecipes()
+    this.loadFavoriteRecipes(true)
   },
 
   onShow() {
     wx.setNavigationBarTitle({
       title: '收藏'
     })
-    this.loadFavoriteRecipes()
+    this.loadFavoriteRecipes(true)
   },
 
-  getDemoFavorites() {
-    return [
-      { id: 101, title: '宫保鸡丁', image: '/images/recipes/gongbao-hero.jpg', category: '川菜' },
-      { id: 102, title: '鱼香肉丝', image: '/images/recipes/gongbao-hero.jpg', category: '川菜' },
-      { id: 103, title: '白切鸡', image: '/images/recipes/gongbao-hero.jpg', category: '粤菜' },
-      { id: 104, title: '清蒸鱼', image: '/images/recipes/gongbao-hero.jpg', category: '粤菜' }
-    ]
+  onPullDownRefresh() {
+    this.loadFavoriteRecipes(true).finally(() => {
+      wx.stopPullDownRefresh()
+    })
   },
 
-  loadFavoriteRecipes() {
-    let favorites = wx.getStorageSync('favoriteRecipes') || []
+  onReachBottom() {
+    if (this.data.hasMore && !this.data.loading) {
+      this.loadFavoriteRecipes(false)
+    }
+  },
 
-    if (isDemoFavoriteList(favorites)) {
-      wx.removeStorageSync('favoriteRecipes')
-      favorites = []
+  async loadFavoriteRecipes(reset = false) {
+    if (!isLoggedIn()) {
+      this.setData({
+        favoriteRecipes: [],
+        isEmpty: true,
+        page: 1,
+        total: 0,
+        hasMore: false,
+        loading: false
+      })
+      return
     }
 
-    const list = favorites.length > 0 ? favorites : this.getDemoFavorites()
-    this.setData({
-      isEmpty: favorites.length === 0,
-      favoriteRecipes: list
-    })
+    if (this.data.loading) {
+      return
+    }
+
+    const nextPage = reset ? 1 : this.data.page + 1
+    this.setData({ loading: true })
+
+    try {
+      const result = await userApi.getFavoriteList({
+        page: nextPage,
+        page_size: this.data.pageSize
+      })
+
+      const payload = result.data || {}
+      const list = Array.isArray(payload.list) ? payload.list.map(normalizeFavorite) : []
+      const pagination = payload.pagination || {}
+      const mergedList = reset ? list : this.data.favoriteRecipes.concat(list)
+
+      this.setData({
+        favoriteRecipes: mergedList,
+        isEmpty: mergedList.length === 0,
+        page: Number(pagination.page || nextPage),
+        pageSize: Number(pagination.page_size || this.data.pageSize),
+        total: Number(pagination.total || mergedList.length),
+        hasMore: Boolean(pagination.has_more),
+        loading: false
+      })
+    } catch (error) {
+      this.setData({ loading: false })
+      wx.showToast({
+        title: '收藏加载失败',
+        icon: 'none'
+      })
+    }
   },
 
   onRecipeTap(e) {
     const recipeId = e.currentTarget.dataset.id
+    if (!recipeId) {
+      return
+    }
+
     wx.navigateTo({
       url: `/pages/recipe-detail/recipe-detail?id=${recipeId}`
     })
+  },
+
+  updateLocalFavorites(recipeId) {
+    const localFavorites = (wx.getStorageSync('favoriteRecipes') || []).filter((item) => {
+      return item.id !== recipeId && item.recipe_id !== recipeId && item.recipeId !== recipeId
+    })
+    wx.setStorageSync('favoriteRecipes', localFavorites)
   },
 
   onRemoveFavorite(e) {
@@ -66,37 +117,34 @@ Page({
     const index = e.currentTarget.dataset.index
 
     wx.showModal({
-      title: '确认取消收藏',
-      content: '确定要取消收藏这道菜吗？',
-      success: (res) => {
-        if (res.confirm) {
-          let favorites = wx.getStorageSync('favoriteRecipes') || []
-          favorites = favorites.filter((item) => item.id !== recipeId)
-          wx.setStorageSync('favoriteRecipes', favorites)
+      title: '取消收藏',
+      content: '确定要移除这道收藏菜谱吗？',
+      success: async (res) => {
+        if (!res.confirm) {
+          return
+        }
+
+        try {
+          await userApi.removeFavorite(recipeId)
+          this.updateLocalFavorites(recipeId)
 
           const favoriteRecipes = this.data.favoriteRecipes.slice()
           favoriteRecipes.splice(index, 1)
 
-          if (favorites.length === 0) {
-            this.setData({
-              favoriteRecipes: this.getDemoFavorites(),
-              isEmpty: true
-            })
-            wx.showToast({
-              title: '已取消收藏',
-              icon: 'success'
-            })
-            return
-          }
-
           this.setData({
             favoriteRecipes,
-            isEmpty: false
+            isEmpty: favoriteRecipes.length === 0,
+            total: Math.max(0, this.data.total - 1)
           })
 
           wx.showToast({
             title: '已取消收藏',
             icon: 'success'
+          })
+        } catch (error) {
+          wx.showToast({
+            title: '取消收藏失败',
+            icon: 'none'
           })
         }
       }
@@ -104,7 +152,7 @@ Page({
   },
 
   onClearAll() {
-    const favorites = wx.getStorageSync('favoriteRecipes') || []
+    const favorites = this.data.favoriteRecipes || []
     if (favorites.length === 0) {
       wx.showToast({
         title: '收藏列表为空',
@@ -116,16 +164,34 @@ Page({
     wx.showModal({
       title: '清空收藏',
       content: '确定要清空所有收藏吗？',
-      success: (res) => {
-        if (res.confirm) {
+      success: async (res) => {
+        if (!res.confirm) {
+          return
+        }
+
+        try {
+          for (const item of favorites) {
+            await userApi.removeFavorite(item.recipe_id || item.id)
+          }
+
           wx.removeStorageSync('favoriteRecipes')
+
           this.setData({
-            favoriteRecipes: this.getDemoFavorites(),
-            isEmpty: true
+            favoriteRecipes: [],
+            isEmpty: true,
+            page: 1,
+            total: 0,
+            hasMore: false
           })
+
           wx.showToast({
             title: '已清空收藏',
             icon: 'success'
+          })
+        } catch (error) {
+          wx.showToast({
+            title: '清空收藏失败',
+            icon: 'none'
           })
         }
       }

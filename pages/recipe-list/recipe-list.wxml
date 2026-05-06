@@ -1,54 +1,67 @@
-<!-- pages/recipe-list/recipe-list.wxml -->
-<view class="container">
-  <!-- 头部：分类与搜索 -->
-  <view class="search-bar">
-    <view class="search-input-wrapper">
-      <input class="search-input" placeholder="搜索本分类菜谱" value="{{searchValue}}" bindinput="onSearchInput" />
-      <view class="search-btn" bindtap="onSearch">
-        <text class="search-icon">🔍</text>
-      </view>
+<view class="page">
+  <view class="search-card">
+    <view class="search-shell">
+      <input
+        class="search-input"
+        placeholder="搜索当前分类下的菜谱"
+        value="{{searchValue}}"
+        bindinput="onSearchInput"
+        confirm-type="search"
+        bindconfirm="onSearch"
+      />
+      <view class="search-btn" bindtap="onSearch">搜索</view>
     </view>
-    <view class="category-title">
-      <text class="category-name">{{categoryName}}</text>
-      <text class="category-count">共 {{recipes.length}} 道菜</text>
+
+    <view class="category-head">
+      <view class="category-copy">
+        <text class="category-title">{{categoryName || '分类菜谱'}}</text>
+        <text class="category-subtitle">共 {{total || recipes.length}} 道菜谱</text>
+      </view>
     </view>
   </view>
 
-  <!-- 列表 -->
-  <view class="recipe-list">
-    <view 
-      class="recipe-item" 
-      wx:for="{{recipes}}" 
+  <view class="recipe-list" wx:if="{{recipes.length > 0}}">
+    <view
+      class="recipe-card"
+      wx:for="{{recipes}}"
       wx:key="id"
       data-id="{{item.id}}"
       data-index="{{index}}"
       bindtap="onRecipeTap"
     >
-      <image class="recipe-image" src="{{item.image}}" mode="aspectFill" />
-      <view class="recipe-info">
-        <text class="recipe-title">{{item.title}}</text>
-        <view class="recipe-meta">
-          <text class="meta-item">{{item.difficulty}}</text>
-          <text class="meta-item">{{item.time}}</text>
-          <text class="meta-item">⭐ {{item.rating}}</text>
+      <image class="recipe-cover" src="{{item.image}}" mode="aspectFill" />
+
+      <view class="recipe-body">
+        <view class="recipe-main">
+          <text class="recipe-title">{{item.title}}</text>
+          <text class="recipe-desc">{{item.desc}}</text>
         </view>
-        <text class="recipe-author">by {{item.author}}</text>
+
+        <view class="recipe-meta">
+          <text class="meta-pill">{{item.difficulty}}</text>
+          <text class="meta-pill">{{item.time}}</text>
+          <text class="meta-author">{{item.author}}</text>
+        </view>
       </view>
-      <view 
-        class="favorite-btn" 
+
+      <view
+        class="favorite-btn {{item.isFavorite ? 'favorite-btn--active' : ''}}"
         data-id="{{item.id}}"
         data-index="{{index}}"
         catchtap="onFavoriteTap"
       >
-        <text class="favorite-icon">⭐</text>
+        {{item.isFavorite ? '已藏' : '收藏'}}
       </view>
     </view>
   </view>
 
-  <!-- 空状态 -->
-  <view class="empty-state" wx:if="{{recipes.length === 0}}">
-    <view class="empty-icon">🍽️</view>
-    <text class="empty-text">该分类暂无菜谱</text>
-    <text class="empty-desc">换个分类或试试搜索吧</text>
+  <view class="empty-state" wx:if="{{initialized && recipes.length === 0 && !loading}}">
+    <text class="empty-icon">食</text>
+    <text class="empty-title">这个分类暂时还没有菜谱</text>
+    <text class="empty-desc">换个分类看看，或者试试搜索其他关键词。</text>
+  </view>
+
+  <view class="loading-state" wx:if="{{loading || recipes.length > 0}}">
+    <text class="loading-text">{{loading ? loadingText : (hasMore ? '上拉加载更多' : '没有更多了')}}</text>
   </view>
 </view>

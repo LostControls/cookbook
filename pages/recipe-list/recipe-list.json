@@ -1,3 +1,4 @@
 {
-  "usingComponents": {}
+  "navigationBarTitleText": "菜谱列表",
+  "enablePullDownRefresh": true
 }
