@@ -2,7 +2,7 @@ const { recipeApi, userApi } = require('../../services/api.js')
 const { isLoggedIn } = require('../../utils/auth.js')
 
 const normalizeRecipe = (item = {}, favoriteIds = []) => {
-  const id = item.id || item.recipe_id || item.recipeId || 0
+  const id = Number(item.id || item.recipe_id || item.recipeId || 0)
   return {
     id,
     title: item.title || item.name || item.recipe_name || '未命名菜谱',
@@ -100,15 +100,18 @@ Page({
   },
 
   onLoad(options) {
-    const { categoryId = '', categoryName = '' } = options || {}
+    const { categoryId = '', categoryName = '', keyword = '' } = options || {}
     const decodedName = decodeURIComponent(categoryName || '')
+    const decodedKeyword = decodeURIComponent(keyword || '')
+
     this.setData({
       categoryId: categoryId ? Number(categoryId) : null,
-      categoryName: decodedName
+      categoryName: decodedName,
+      searchValue: decodedKeyword
     })
 
     wx.setNavigationBarTitle({
-      title: decodedName || '菜谱列表'
+      title: decodedName || (decodedKeyword ? '搜索结果' : '菜谱列表')
     })
 
     this.loadRecipes(true)
@@ -116,7 +119,7 @@ Page({
 
   onShow() {
     wx.setNavigationBarTitle({
-      title: this.data.categoryName || '菜谱列表'
+      title: this.data.categoryName || (this.data.searchValue ? '搜索结果' : '菜谱列表')
     })
   },
 
@@ -153,7 +156,7 @@ Page({
 
       const payload = result.data || {}
       const rawList = getRecipeListFromPayload(payload)
-      const favoriteIds = []
+      const favoriteIds = await this.getVisibleFavoriteIds(rawList)
       const list = rawList.map((item) => normalizeRecipe(item, favoriteIds))
       const pagination = getPaginationFromPayload(payload, list.length, nextPage, this.data.pageSize)
 
@@ -180,6 +183,31 @@ Page({
     }
   },
 
+  async getVisibleFavoriteIds(rawList = []) {
+    if (!isLoggedIn()) {
+      return []
+    }
+
+    const recipeIds = rawList.map((item) => Number(item.id || item.recipe_id || item.recipeId || 0)).filter(Boolean)
+    if (recipeIds.length === 0) {
+      return []
+    }
+
+    try {
+      const result = await userApi.getFavoriteList({
+        page: 1,
+        page_size: 10
+      })
+      const payload = result.data || {}
+      const list = Array.isArray(payload.list) ? payload.list : []
+      return list
+        .map((item) => Number(item.recipe_id || item.id || 0))
+        .filter((id) => recipeIds.includes(id))
+    } catch (error) {
+      return []
+    }
+  },
+
   onSearchInput(e) {
     this.setData({
       searchValue: e.detail.value || ''
@@ -191,7 +219,7 @@ Page({
   },
 
   onRecipeTap(e) {
-    const recipeId = e.currentTarget.dataset.id
+    const recipeId = Number(e.currentTarget.dataset.id || 0)
     if (!recipeId) {
       return
     }
@@ -202,14 +230,18 @@ Page({
   },
 
   onFavoriteTap(e) {
-    const recipeId = e.currentTarget.dataset.id
-    const index = e.currentTarget.dataset.index
+    const recipeId = Number(e.currentTarget.dataset.id || 0)
+    const index = Number(e.currentTarget.dataset.index || 0)
     const recipe = this.data.recipes[index]
 
     if (!isLoggedIn()) {
       wx.navigateTo({
         url: '/pages/auth/auth'
       })
+      return
+    }
+
+    if (!recipeId || !recipe) {
       return
     }
 

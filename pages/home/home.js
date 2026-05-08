@@ -1,59 +1,129 @@
+const { homeApi, userApi } = require('../../services/api.js')
+const { isLoggedIn } = require('../../utils/auth.js')
+
+const fallbackData = {
+  brandName: '味食记菜谱',
+  brandSlogan: '用心做菜，记录美味',
+  greeting: '今天想做什么菜？',
+  heroPanel: {
+    title: '今日下厨灵感',
+    desc: '把想做的菜、想记的味道，都留在味食记菜谱里。',
+    logo: '/images/brand-logo.png'
+  },
+  quickActionText: '去看收藏',
+  categoryList: [],
+  topicList: [],
+  recommendRecipes: [],
+  recentMenu: []
+}
+
+const normalizeHomeData = (payload = {}) => ({
+  brandName: payload.brand_name || fallbackData.brandName,
+  brandSlogan: payload.brand_slogan || fallbackData.brandSlogan,
+  greeting: payload.greeting || fallbackData.greeting,
+  heroPanel: {
+    title: (payload.hero_panel && payload.hero_panel.title) || fallbackData.heroPanel.title,
+    desc: (payload.hero_panel && payload.hero_panel.desc) || fallbackData.heroPanel.desc,
+    logo: (payload.hero_panel && payload.hero_panel.logo) || fallbackData.heroPanel.logo
+  },
+  quickActionText: (payload.quick_action && payload.quick_action.text) || fallbackData.quickActionText,
+  categoryList: Array.isArray(payload.category_list) ? payload.category_list : [],
+  topicList: Array.isArray(payload.topic_list) ? payload.topic_list : [],
+  recommendRecipes: Array.isArray(payload.recommend_recipes)
+    ? payload.recommend_recipes.map((item) => ({
+        id: Number(item.id || 0),
+        title: item.title || '未命名菜谱',
+        desc: item.desc || item.description || '',
+        time: item.time || '',
+        difficulty: item.difficulty || '',
+        image: item.image || '/images/recipes/gongbao-hero.jpg',
+        isFavorite: Boolean(item.is_favorite)
+      }))
+    : [],
+  recentMenu: Array.isArray(payload.recent_menu) ? payload.recent_menu : []
+})
+
 Page({
   data: {
-    brandName: '味食记菜谱',
-    brandSlogan: '用心做菜，记录美味',
-    searchValue: '',
-    greeting: '今天想做什么菜？',
-    categoryList: [
-      { id: 1, name: '家常菜', icon: '家', color: '#FFF0E6' },
-      { id: 2, name: '快手菜', icon: '快', color: '#EEF8F0' },
-      { id: 3, name: '汤羹', icon: '汤', color: '#F4F5FF' },
-      { id: 4, name: '轻食', icon: '轻', color: '#FFF6EE' }
-    ],
-    topicList: [
-      { id: 1, title: '今日灵感', desc: '用简单食材做一顿舒服晚餐。', tag: '编辑推荐' },
-      { id: 2, title: '本周常做', desc: '适合工作日晚上的高完成度菜谱。', tag: '热门清单' }
-    ],
-    recommendRecipes: [
-      { id: 1, title: '清炒时蔬', desc: '十分钟完成，清爽不油腻。', time: '10 分钟', difficulty: '简单', image: '/images/recipes/gongbao-hero.jpg', isFavorite: false },
-      { id: 2, title: '番茄牛腩', desc: '酸甜开胃，周末慢炖很合适。', time: '45 分钟', difficulty: '中等', image: '/images/recipes/gongbao-hero.jpg', isFavorite: false },
-      { id: 3, title: '香煎鸡胸', desc: '少油低负担，搭配沙拉也很适合。', time: '18 分钟', difficulty: '简单', image: '/images/recipes/gongbao-hero.jpg', isFavorite: false }
-    ],
-    recentMenu: [
-      { id: 11, title: '一周三餐灵感', note: '适合上班日的省心做饭节奏。' },
-      { id: 12, title: '清冰箱计划', note: '把常见食材重新组合成新菜。' }
-    ]
+    ...fallbackData,
+    searchValue: ''
   },
 
   onLoad() {
     wx.setNavigationBarTitle({
       title: '味食记菜谱'
     })
-    this.syncFavorites()
+    this.loadHomeData()
   },
 
   onShow() {
-    this.syncFavorites()
+    this.syncFavoriteState()
   },
 
   onPullDownRefresh() {
-    this.syncFavorites()
-    wx.stopPullDownRefresh()
+    this.loadHomeData().finally(() => {
+      wx.stopPullDownRefresh()
+    })
   },
 
-  syncFavorites() {
-    const favoriteIds = (wx.getStorageSync('favoriteRecipes') || []).map((item) => item.id)
-    const recommendRecipes = this.data.recommendRecipes.map((item) => ({
-      ...item,
-      isFavorite: favoriteIds.includes(item.id)
-    }))
+  async loadHomeData() {
+    try {
+      const result = await homeApi.getHomeData()
+      const homeData = normalizeHomeData(result.data || {})
+      this.setData(homeData)
+      await this.syncFavoriteState(homeData.recommendRecipes)
+    } catch (error) {
+      wx.showToast({
+        title: '首页加载失败',
+        icon: 'none'
+      })
+    }
+  },
 
-    this.setData({ recommendRecipes })
+  async syncFavoriteState(recipeList = this.data.recommendRecipes) {
+    const list = Array.isArray(recipeList) ? recipeList : []
+    if (list.length === 0) {
+      return
+    }
+
+    if (!isLoggedIn()) {
+      this.setData({
+        recommendRecipes: list.map((item) => ({
+          ...item,
+          isFavorite: false
+        }))
+      })
+      return
+    }
+
+    try {
+      const result = await userApi.getFavoriteList({
+        page: 1,
+        page_size: 10
+      })
+      const payload = result.data || {}
+      const favoriteList = Array.isArray(payload.list) ? payload.list : []
+      const favoriteIds = favoriteList.map((item) => Number(item.recipe_id || item.id || 0))
+
+      this.setData({
+        recommendRecipes: list.map((item) => ({
+          ...item,
+          isFavorite: favoriteIds.includes(Number(item.id || 0))
+        }))
+      })
+    } catch (error) {
+      this.setData({
+        recommendRecipes: list.map((item) => ({
+          ...item,
+          isFavorite: false
+        }))
+      })
+    }
   },
 
   onSearchInput(e) {
     this.setData({
-      searchValue: e.detail.value
+      searchValue: e.detail.value || ''
     })
   },
 
@@ -67,21 +137,24 @@ Page({
       return
     }
 
-    wx.showToast({
-      title: `搜索：${keyword}`,
-      icon: 'none'
+    wx.navigateTo({
+      url: `/pages/recipe-list/recipe-list?categoryName=${encodeURIComponent('搜索结果')}&keyword=${encodeURIComponent(keyword)}`
     })
   },
 
   onCategoryTap(e) {
-    const { name } = e.currentTarget.dataset
+    const { id, name } = e.currentTarget.dataset
     wx.navigateTo({
-      url: `/pages/recipe-list/recipe-list?categoryName=${name}`
+      url: `/pages/recipe-list/recipe-list?categoryId=${id}&categoryName=${encodeURIComponent(name || '')}`
     })
   },
 
   onRecipeTap(e) {
     const { id } = e.currentTarget.dataset
+    if (!id) {
+      return
+    }
+
     wx.navigateTo({
       url: `/pages/recipe-detail/recipe-detail?id=${id}`
     })
@@ -89,28 +162,44 @@ Page({
 
   onFavoriteTap(e) {
     const { id, index } = e.currentTarget.dataset
-    const recipe = this.data.recommendRecipes[index]
-    let favorites = wx.getStorageSync('favoriteRecipes') || []
-    const exists = favorites.some((item) => item.id === id)
+    const recipeId = Number(id || 0)
+    const recipeIndex = Number(index || 0)
+    const recipe = this.data.recommendRecipes[recipeIndex]
 
-    if (exists) {
-      favorites = favorites.filter((item) => item.id !== id)
-    } else {
-      favorites.unshift(recipe)
+    if (!isLoggedIn()) {
+      wx.navigateTo({
+        url: '/pages/auth/auth'
+      })
+      return
     }
 
-    wx.setStorageSync('favoriteRecipes', favorites)
-    this.syncFavorites()
-    wx.showToast({
-      title: exists ? '已取消收藏' : '已加入收藏',
-      icon: 'none'
-    })
+    if (!recipeId || !recipe) {
+      return
+    }
+
+    const request = recipe.isFavorite
+      ? userApi.removeFavorite(recipeId)
+      : userApi.addFavorite({ recipe_id: recipeId })
+
+    request.then(() => {
+      const recommendRecipes = this.data.recommendRecipes.slice()
+      recommendRecipes[recipeIndex] = {
+        ...recipe,
+        isFavorite: !recipe.isFavorite
+      }
+      this.setData({ recommendRecipes })
+
+      wx.showToast({
+        title: recipe.isFavorite ? '已取消收藏' : '已加入收藏',
+        icon: 'none'
+      })
+    }).catch(() => {})
   },
 
   onTopicTap(e) {
     const { title } = e.currentTarget.dataset
     wx.showToast({
-      title,
+      title: title || '敬请期待',
       icon: 'none'
     })
   },

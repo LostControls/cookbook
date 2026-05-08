@@ -92,7 +92,13 @@
 .grid-title {
   font-size: 28rpx;
   color: #333;
-  padding: 16rpx;
+  padding: 16rpx 16rpx 8rpx;
+}
+.grid-time {
+  font-size: 22rpx;
+  color: #999;
+  padding: 0 16rpx 16rpx;
+  line-height: 1.5;
 }
 .remove-btn {
   position: absolute;

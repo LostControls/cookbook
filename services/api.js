@@ -1,6 +1,12 @@
 const { config } = require('../config/api.js')
 const { get, post, put, delete: del } = require('../utils/request.js')
 
+const homeApi = {
+  getHomeData() {
+    return get(config.apis.home.index)
+  }
+}
+
 const userApi = {
   login(data) {
     return post(config.apis.user.login, data)
@@ -32,6 +38,22 @@ const userApi = {
 
   getFavoriteCount() {
     return get(config.apis.user.favoriteCount)
+  },
+
+  getBrowseHistoryList(params) {
+    return get(config.apis.user.browseHistoryList, params)
+  },
+
+  recordBrowseHistory(data) {
+    return post(config.apis.user.recordBrowseHistory, data)
+  },
+
+  removeBrowseHistory(historyId) {
+    return del(`${config.apis.user.removeBrowseHistory}/${historyId}`)
+  },
+
+  clearBrowseHistory() {
+    return del(config.apis.user.clearBrowseHistory)
   },
 
   submitFeedback(data) {
@@ -72,6 +94,7 @@ const categoryApi = {
 }
 
 module.exports = {
+  homeApi,
   userApi,
   recipeApi,
   categoryApi

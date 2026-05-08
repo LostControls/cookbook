@@ -42,11 +42,32 @@ Page({
     this.loadUserInfo()
   },
 
-  loadUserInfo() {
-    const storedUserInfo = getStoredUserInfo()
-    const loggedIn = isLoggedIn()
+  async loadUserInfo() {
+    const storedUserInfo = getStoredUserInfo() || {}
 
-    if (storedUserInfo && loggedIn) {
+    try {
+      const result = await userApi.getUserInfo()
+      const remoteProfile = (result && result.data) || {}
+      const userInfo = {
+        ...storedUserInfo,
+        ...remoteProfile
+      }
+      wx.setStorageSync('userInfo', userInfo)
+
+      const nickname = userInfo.nickName || userInfo.nickname || '微信用户'
+      this.setData({
+        isLoggedIn: true,
+        nickname,
+        userInfo: {
+          nickname,
+          avatar: userInfo.avatarUrl || userInfo.avatar || DEFAULT_USER_INFO.avatar,
+          avatarUrl: userInfo.avatarUrl || userInfo.avatar || DEFAULT_USER_INFO.avatar,
+          city: userInfo.city || '',
+          province: userInfo.province || '',
+          country: userInfo.country || ''
+        }
+      })
+    } catch (error) {
       const nickname = storedUserInfo.nickName || storedUserInfo.nickname || '微信用户'
       this.setData({
         isLoggedIn: true,
@@ -60,17 +81,7 @@ Page({
           country: storedUserInfo.country || ''
         }
       })
-      return
     }
-
-    this.setData({
-      isLoggedIn: false,
-      nickname: '',
-      userInfo: {
-        ...DEFAULT_USER_INFO,
-        nickname: '点击登录'
-      }
-    })
   },
 
   onNicknameInput(e) {
@@ -146,7 +157,6 @@ Page({
 
         try {
           await logout()
-          this.loadUserInfo()
           wx.showToast({
             title: '已退出登录',
             icon: 'success'

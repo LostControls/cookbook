@@ -1,68 +1,7 @@
-const { getUserProfile, loginWithWechatProfile, getStoredUserInfo, isLoggedIn } = require('../../utils/auth.js')
-
 Page({
-  data: {
-    loading: false,
-    userInfo: getStoredUserInfo(),
-    isLoggedIn: isLoggedIn()
-  },
-
   onLoad() {
-    wx.setNavigationBarTitle({
-      title: '微信登录'
+    wx.redirectTo({
+      url: '/pages/auth/auth'
     })
-  },
-
-  onShow() {
-    this.setData({
-      userInfo: getStoredUserInfo(),
-      isLoggedIn: isLoggedIn()
-    })
-  },
-
-  async onWechatLogin() {
-    if (this.data.loading) {
-      return
-    }
-
-    try {
-      const profile = await getUserProfile()
-      this.setData({ loading: true })
-
-      const { userInfo } = await loginWithWechatProfile(profile)
-      this.setData({
-        userInfo,
-        isLoggedIn: true
-      })
-
-      wx.showToast({
-        title: '登录成功',
-        icon: 'success'
-      })
-
-      setTimeout(() => {
-        const pages = getCurrentPages()
-        if (pages.length > 1) {
-          wx.navigateBack()
-          return
-        }
-
-        wx.switchTab({
-          url: '/pages/account/account'
-        })
-      }, 300)
-    } catch (error) {
-      const message = error && error.errMsg && error.errMsg.includes('getUserProfile:fail auth deny')
-        ? '你已取消授权'
-        : '登录失败，请稍后重试'
-
-      wx.showToast({
-        title: message,
-        icon: 'none'
-      })
-      console.error('微信登录失败:', error)
-    } finally {
-      this.setData({ loading: false })
-    }
   }
 })
