@@ -37,12 +37,11 @@ Page({
     }
   },
 
-  // 搜索分类
   onSearchInput(e) {
-    const searchValue = e.detail.value
+    const searchValue = e.detail.value || ''
     const keyword = searchValue.trim().toLowerCase()
     const categories = keyword
-      ? this.data.allCategories.filter(item => String(item.name).toLowerCase().includes(keyword))
+      ? this.data.allCategories.filter((item) => String(item.name || '').toLowerCase().includes(keyword))
       : this.data.allCategories
 
     this.setData({
@@ -51,19 +50,18 @@ Page({
     })
   },
 
-  // 点击分类
   onCategoryTap(e) {
     const categoryId = e.currentTarget.dataset.id
-    const categoryName = e.currentTarget.dataset.name
+    const categoryName = e.currentTarget.dataset.name || ''
 
     wx.navigateTo({
-      url: `/pages/recipe-list/recipe-list?categoryId=${categoryId}&categoryName=${categoryName}`
+      url: `/pages/recipe-list/recipe-list?categoryId=${categoryId}&categoryName=${encodeURIComponent(categoryName)}`
     })
   },
 
-  // 搜索
   onSearch() {
-    if (!this.data.searchValue.trim()) {
+    const keyword = (this.data.searchValue || '').trim()
+    if (!keyword) {
       wx.showToast({
         title: '请输入搜索内容',
         icon: 'none'
@@ -72,7 +70,7 @@ Page({
     }
 
     wx.navigateTo({
-      url: `/pages/search/search?keyword=${this.data.searchValue}`
+      url: `/pages/recipe-list/recipe-list?categoryName=${encodeURIComponent('搜索结果')}&keyword=${encodeURIComponent(keyword)}`
     })
   }
 })

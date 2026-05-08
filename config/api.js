@@ -6,6 +6,9 @@ const devConfig = {
   timeout: 10000,
   // 开发环境接口
   apis: {
+    home: {
+      index: '/api/home'
+    },
     // 用户相关接口
     user: {
       login: '/api/user/login',
@@ -16,6 +19,10 @@ const devConfig = {
       addFavorite: '/api/user/favorites',
       removeFavorite: '/api/user/favorites',
       favoriteCount: '/api/user/favorites/count',
+      browseHistoryList: '/api/user/browse-histories',
+      recordBrowseHistory: '/api/user/browse-histories',
+      removeBrowseHistory: '/api/user/browse-histories',
+      clearBrowseHistory: '/api/user/browse-histories',
       feedback: '/api/user/feedback'
     },
     // 菜谱相关接口
@@ -40,6 +47,9 @@ const prodConfig = {
   timeout: 10000,
   // 生产环境接口
   apis: {
+    home: {
+      index: '/api/home'
+    },
     user: {
       login: '/api/user/login',
       logout: '/api/user/logout',
@@ -49,6 +59,10 @@ const prodConfig = {
       addFavorite: '/api/user/favorites',
       removeFavorite: '/api/user/favorites',
       favoriteCount: '/api/user/favorites/count',
+      browseHistoryList: '/api/user/browse-histories',
+      recordBrowseHistory: '/api/user/browse-histories',
+      removeBrowseHistory: '/api/user/browse-histories',
+      clearBrowseHistory: '/api/user/browse-histories',
       feedback: '/api/user/feedback'
     },
     recipe: {
@@ -70,6 +84,9 @@ const testConfig = {
   baseUrl: 'http://106.53.112.100',
   timeout: 10000,
   apis: {
+    home: {
+      index: '/api/home'
+    },
     user: {
       login: '/api/user/login',
       logout: '/api/user/logout',
@@ -79,6 +96,10 @@ const testConfig = {
       addFavorite: '/api/user/favorites',
       removeFavorite: '/api/user/favorites',
       favoriteCount: '/api/user/favorites/count',
+      browseHistoryList: '/api/user/browse-histories',
+      recordBrowseHistory: '/api/user/browse-histories',
+      removeBrowseHistory: '/api/user/browse-histories',
+      clearBrowseHistory: '/api/user/browse-histories',
       feedback: '/api/user/feedback'
     },
     recipe: {

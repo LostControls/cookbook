@@ -1,17 +1,6 @@
 const { DEFAULT_USER_INFO, getStoredUserInfo, isLoggedIn } = require('../../utils/auth.js')
 const { userApi } = require('../../services/api.js')
 
-const DEMO_FAVORITE_IDS = [101, 102, 103, 104]
-
-const isDemoFavoriteList = (favorites = []) => {
-  if (!Array.isArray(favorites) || favorites.length !== DEMO_FAVORITE_IDS.length) {
-    return false
-  }
-
-  const ids = favorites.map((item) => item.id).sort((a, b) => a - b)
-  return ids.every((id, index) => id === DEMO_FAVORITE_IDS[index])
-}
-
 Page({
   data: {
     userInfo: {
@@ -73,41 +62,57 @@ Page({
   },
 
   async loadUserInfo() {
-    const storedUserInfo = getStoredUserInfo()
-    const storedFavorites = wx.getStorageSync('favoriteRecipes') || []
-    const localFavoriteCount = isDemoFavoriteList(storedFavorites) ? 0 : storedFavorites.length
-    let favoriteCount = localFavoriteCount
-
-    if (storedUserInfo && isLoggedIn()) {
-      try {
-        const result = await userApi.getFavoriteCount()
-        favoriteCount = (result.data && result.data.favorite_count) || 0
-      } catch (error) {
-        favoriteCount = localFavoriteCount
-      }
-
+    if (!isLoggedIn()) {
       this.setData({
-        isLoggedIn: true,
-        serviceList: this.buildServiceList(favoriteCount),
+        isLoggedIn: false,
+        serviceList: this.buildServiceList(0),
         userInfo: {
-          nickname: storedUserInfo.nickName || storedUserInfo.nickname || DEFAULT_USER_INFO.nickname,
-          avatar: storedUserInfo.avatarUrl || storedUserInfo.avatar || DEFAULT_USER_INFO.avatar,
-          province: storedUserInfo.province || '',
-          city: storedUserInfo.city || '',
-          country: storedUserInfo.country || '',
-          level: '点击查看个人信息',
-          favorites: favoriteCount
+          ...DEFAULT_USER_INFO,
+          level: '点击登录',
+          favorites: 0
         }
       })
       return
     }
 
+    const storedUserInfo = getStoredUserInfo() || {}
+    let remoteProfile = {}
+    let favoriteCount = 0
+
+    try {
+      const [profileResult, favoriteCountResult] = await Promise.all([
+        userApi.getUserInfo(),
+        userApi.getFavoriteCount()
+      ])
+
+      remoteProfile = (profileResult && profileResult.data) || {}
+      favoriteCount = (favoriteCountResult && favoriteCountResult.data && favoriteCountResult.data.favorite_count) || 0
+    } catch (error) {
+      remoteProfile = storedUserInfo
+      favoriteCount = 0
+    }
+
+    const mergedUserInfo = {
+      ...storedUserInfo,
+      ...remoteProfile
+    }
+    wx.setStorageSync('userInfo', mergedUserInfo)
+
+    const nickname =
+      mergedUserInfo.nickName ||
+      mergedUserInfo.nickname ||
+      DEFAULT_USER_INFO.nickname
+
     this.setData({
-      isLoggedIn: false,
+      isLoggedIn: true,
       serviceList: this.buildServiceList(favoriteCount),
       userInfo: {
-        ...DEFAULT_USER_INFO,
-        level: '点击登录',
+        nickname,
+        avatar: mergedUserInfo.avatarUrl || mergedUserInfo.avatar || DEFAULT_USER_INFO.avatar,
+        province: mergedUserInfo.province || '',
+        city: mergedUserInfo.city || '',
+        country: mergedUserInfo.country || '',
+        level: '点击查看个人信息',
         favorites: favoriteCount
       }
     })
@@ -127,21 +132,19 @@ Page({
   },
 
   onAvatarTap() {
-    if (!this.data.isLoggedIn) {
-      wx.navigateTo({
-        url: '/pages/auth/auth'
-      })
-      return
-    }
-
-    wx.navigateTo({
-      url: '/pages/profile/profile'
-    })
+    this.onProfileTap()
   },
 
   onServiceTap(e) {
     const { url, mode } = e.currentTarget.dataset
     if (!url) {
+      return
+    }
+
+    if (!this.data.isLoggedIn && mode !== 'switchTab') {
+      wx.navigateTo({
+        url: '/pages/auth/auth'
+      })
       return
     }
 

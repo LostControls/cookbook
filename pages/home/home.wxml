@@ -6,14 +6,14 @@
         <text class="hero-title">{{greeting}}</text>
         <text class="hero-slogan">{{brandSlogan}}</text>
       </view>
-      <view class="hero-action" bindtap="onQuickActionTap">去看收藏</view>
+      <view class="hero-action" bindtap="onQuickActionTap">{{quickActionText}}</view>
     </view>
 
     <view class="brand-panel">
-      <image class="brand-logo" src="/images/brand-logo.png" mode="aspectFit" />
+      <image class="brand-logo" src="{{heroPanel.logo}}" mode="aspectFit" />
       <view class="brand-panel-copy">
-        <text class="brand-panel-title">今日下厨灵感</text>
-        <text class="brand-panel-desc">把想做的菜、想记的味道，都留在味食记菜谱里。</text>
+        <text class="brand-panel-title">{{heroPanel.title}}</text>
+        <text class="brand-panel-desc">{{heroPanel.desc}}</text>
       </view>
     </view>
 
@@ -40,6 +40,7 @@
         class="category-item"
         wx:for="{{categoryList}}"
         wx:key="id"
+        data-id="{{item.id}}"
         data-name="{{item.name}}"
         bindtap="onCategoryTap"
         style="background: {{item.color}}"
@@ -53,7 +54,7 @@
   <view class="section">
     <view class="section-head">
       <text class="section-title">本周专题</text>
-      <text class="section-desc">先用简洁内容沉淀体验，后续再继续接更多接口。</text>
+      <text class="section-desc">先用简洁内容完成体验，后续再接后台维护。</text>
     </view>
     <view class="topic-list">
       <view
@@ -73,7 +74,7 @@
   <view class="section">
     <view class="section-head">
       <text class="section-title">推荐菜谱</text>
-      <text class="section-desc">当前以静态内容完善体验，后续可以平滑接入真实菜谱数据。</text>
+      <text class="section-desc">当前已接真实菜谱数据，会按热度推荐。</text>
     </view>
     <view class="recipe-list">
       <view

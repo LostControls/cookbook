@@ -1,5 +1,6 @@
 // pages/feedback/feedback.js
 const { userApi } = require('../../services/api.js')
+const { isLoggedIn } = require('../../utils/auth.js')
 
 Page({
   data: {
@@ -14,21 +15,21 @@ Page({
     this.loadDraft()
   },
 
-  // 输入
   onInputSubject(e) {
     this.setData({ subject: e.detail.value })
     this.saveDraft()
   },
+
   onInputContent(e) {
     this.setData({ content: e.detail.value })
     this.saveDraft()
   },
+
   onInputContact(e) {
     this.setData({ contact: e.detail.value })
     this.saveDraft()
   },
 
-  // 草稿：防误触丢失
   saveDraft() {
     const draft = {
       subject: this.data.subject,
@@ -37,6 +38,7 @@ Page({
     }
     wx.setStorageSync('feedback_draft', draft)
   },
+
   loadDraft() {
     const draft = wx.getStorageSync('feedback_draft')
     if (draft && typeof draft === 'object') {
@@ -48,8 +50,14 @@ Page({
     }
   },
 
-  // 提交
   async onSubmit() {
+    if (!isLoggedIn()) {
+      wx.navigateTo({
+        url: '/pages/auth/auth'
+      })
+      return
+    }
+
     const { subject, content, contact } = this.data
     if (!subject || !content) {
       wx.showToast({ title: '请填写标题和内容', icon: 'none' })
@@ -63,12 +71,10 @@ Page({
         contact
       })
 
-      // 清空草稿与表单
       wx.removeStorageSync('feedback_draft')
       this.setData({ subject: '', content: '', contact: '', showSuccess: true })
       wx.showToast({ title: '提交成功', icon: 'success' })
 
-      // 3秒后隐藏成功提示
       setTimeout(() => {
         this.setData({ showSuccess: false })
       }, 3000)

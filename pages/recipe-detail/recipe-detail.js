@@ -74,6 +74,12 @@ Page({
       })
 
       this.checkFavoriteStatus()
+
+      if (isLoggedIn()) {
+        userApi.recordBrowseHistory({
+          recipe_id: Number(recipe.id || recipeId)
+        }).catch(() => {})
+      }
     }).catch(() => {
       wx.showToast({
         title: '菜谱详情加载失败',
